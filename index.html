@@ -132,7 +132,7 @@
 
     .eyes-layer {
       position: fixed;
-      top: 12svh;
+      top: 6svh;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
@@ -239,19 +239,14 @@
       to { transform: translateY(7px) scaleY(1); opacity: .9; }
     }
 
-    .card {
-      width: 100%;
-      padding: clamp(18px, 4vw, 28px);
-      border-radius: 28px;
-      background: linear-gradient(180deg, rgba(7,7,18,.84), rgba(0,0,0,.76));
-      border: 1px solid rgba(255,255,255,.18);
-      box-shadow:
-        0 28px 80px rgba(0,0,0,.68),
-        inset 0 0 0 1px rgba(255,255,255,.06);
-      backdrop-filter: blur(14px);
-      position: relative;
-      overflow: hidden;
-    }
+   .card {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.25);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.6),
+    inset 0 0 0 1px rgba(255,255,255,.08);
+}
 
     .card::before {
       content: '';
@@ -1071,7 +1066,7 @@ function playAlert() {
         if (pct >= 100) {
           pct = 100;
           clearInterval(interval);
-          setTimeout(resetAll, 1400);
+          setTimeout(resetAll, 1400);😊😊😊
         }
 
         serverText.innerHTML =
@@ -1106,12 +1101,17 @@ function playAlert() {
     }
 
     function extremeGlitch() {
-      flashNoise();
-      randomLightning();
-      document.body.style.transform = 'translateX(-3px)';
-      setTimeout(() => document.body.style.transform = 'translateX(3px)', 70);
-      setTimeout(() => document.body.style.transform = '', 140);
-    }
+  flashNoise();
+
+  // trueno solo a veces
+  if (Math.random() < 0.3) {
+    randomLightning();
+  }
+
+  document.body.style.transform = 'translateX(-3px)';
+  setTimeout(() => document.body.style.transform = 'translateX(3px)', 70);
+  setTimeout(() => document.body.style.transform = '', 140);
+}
 
     function spawnWhisper() {
       const div = document.createElement('div');
@@ -1141,10 +1141,11 @@ function playAlert() {
     }
 
     setInterval(() => {
-      if (Math.random() < .24) {
-        randomLightning();
-      }
-    }, 3500);
+     if (Math.random() < .08) {
+      randomLightning();
+       }
+       }, 6000);
+    
 function showFinalValidationPopup() {
   finalPopup.classList.add('active');
   finalTitle.textContent = 'Validando usuario...';
