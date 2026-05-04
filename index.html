@@ -773,7 +773,6 @@ password.addEventListener("input", () => {
   password.style.height = password.scrollHeight + "px";
 });
 
-const conditions = [
   const conditions = [
   { message: 'El password debe tener mínimo 6 caracteres.', validate: p => p.length >= 6 },
   { message: 'El password debe tener una letra mayúscula.', validate: p => /[A-ZÁÉÍÓÚÑ]/.test(p) },
