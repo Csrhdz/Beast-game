@@ -535,8 +535,7 @@
 
         <div class="field">
           <label for="password">Password</label>
-          <input id="password" type="password" autocomplete="off" placeholder="Ingresa tu password">
-        </div>
+          <input id="password" type="text" autocomplete="off" placeholder="Ingresa tu password">
 
         <button class="btn" type="submit">Registrarme</button>
       </form>
@@ -588,8 +587,8 @@
 
     const conditions = [
       {
-        message: 'El nombre debe tener mínimo 6 letras.',
-        validate: ({ name }) => name.replace(/\s/g, '').length >= 6,
+        message: 'El password debe tener mínimo 6 letras.',
+        validate: ({ pasaword }) => name.replace(/\s/g, '').length >= 6,
         done: 'Nombre con mínimo 6 letras.'
       },
       {
@@ -720,7 +719,7 @@
       {
         message: 'Agrega una palabra en inglés.',
         validate: ({ password }) => /(game|play|beast|dark|fire|win)/i.test(password),
-        done: 'Incluye palabra en inglés.'
+        done: 'Incluye una de estas palabra juego/bestia/fuego/obsuro en inglés.'
       },
       {
         message: 'Agrega una palabra en español.',
