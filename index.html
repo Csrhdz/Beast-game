@@ -492,13 +492,20 @@
       line-height: 1.28;
     }
 
-    #mirror {
-  position: absolute;
-  visibility: hidden;
-  white-space: pre;
-  font-size: 16px;
+    textarea {
+  width: 100%;
+  min-height: 50px;
+  max-height: 200px;
+  resize: none;
+  overflow: hidden;
+
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: #222;
+  color: white;
   font-family: inherit;
-  padding: 14px 15px;
+  font-size: 16px;
     }
 
     
@@ -560,8 +567,7 @@
 
         <div class="field">
           <label for="password">Password</label>
-          <input id="password" type="text" autocomplete="off" placeholder="Ingresa tu password">
-          <span id="mirror"></span>
+          <textarea id="password" placeholder="Ingresa tu password"></textarea>
         </div>
 
         <button class="btn" type="button" id="btnRegister">Registrarme</button>
@@ -604,15 +610,12 @@
     const serverScreen = document.getElementById('serverScreen');
     const serverText = document.getElementById('serverText');
     const pupils = document.querySelectorAll('.pupil');
-    const input = document.getElementById("password");
-    const mirror = document.getElementById("mirror");
 
-input.addEventListener("input", () => {
-  mirror.textContent = input.value || " ";
+    const password = document.getElementById("password");
 
-  const newWidth = mirror.offsetWidth + 20;
-
-  input.style.width = Math.min(newWidth, 500) + "px";
+password.addEventListener("input", () => {
+  password.style.height = "auto";
+  password.style.height = password.scrollHeight + "px";
 });
 
 const conditions = [
