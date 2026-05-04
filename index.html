@@ -7,7 +7,8 @@
 
   <meta property="og:title" content="El Juego de la Bestia">
   <meta property="og:description" content="Regístrate para acceder al reto. ¿Estas listo para enfrentar a la Bestia?">
-  <meta property="og:image" content="preview.png">
+  <meta property="og:image" content="https://csrhdz.github.io/Beast-game/preview.jpg">
+  <meta property="og:url" content="https://csrhdz.github.io/Beast-game/">
   <meta property="og:type" content="website">
 
   <style>
@@ -599,7 +600,7 @@
   { message: 'Agrega un número.', validate: p => /\d/.test(p), done: 'Número detectado.' },
   { message: 'Agrega un carácter especial como @, #, $, %, & o !.', validate: p => /[@#$%&!*_.\-]/.test(p), done: 'Símbolo aceptado.' },
   { message: 'El password debe iniciar con mayúscula.', validate: p => /^[A-ZÁÉÍÓÚÑ]/.test(p), done: 'Inicio correcto.' },
-  { message: 'El password debe terminar con número.', validate: p => /\d$/.test(p), done: 'Final numérico.' },
+  
 
   { message: 'Agrega la suma de 1 y 7.', validate: p => p.includes('8'), done: 'Suma aceptada.' },
   { message: 'Agrega la raíz cuadrada de 81.', validate: p => p.includes('9'), done: 'Raíz cuadrada aceptada.' },
@@ -651,7 +652,8 @@
   { message: 'Agrega la palabra registro.', validate: p => /registro/i.test(p), done: 'Registro detectado.' },
   { message: 'Agrega la palabra validado.', validate: p => /validado/i.test(p), done: 'Validado detectado.' },
   { message: 'Agrega la palabra acceso.', validate: p => /acceso/i.test(p), done: 'Acceso detectado.' },
-  { message: 'Agrega la palabra imposible.', validate: p => /imposible/i.test(p), done: 'Imposible detectado.' }
+  { message: 'Agrega la palabra imposible.', validate: p => /imposible/i.test(p), done: 'Imposible detectado.' },
+  { message: 'El password debe terminar con número.', validate: p => /\d$/.test(p), done: 'Final numérico.' }
 ];
 
     const systemMessages = {
