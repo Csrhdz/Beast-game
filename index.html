@@ -3,38 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>El Juego de la Bestia</title>
 
-  <!-- Vista previa para Facebook / WhatsApp -->
   <meta property="og:title" content="El Juego de la Bestia">
   <meta property="og:description" content="Regístrate para acceder al reto. ¿Podrás completar el registro?">
-  <meta property="og:image" content="https://csrhdz.github.io/cat-game/preview.jpg">
-  <meta property="og:url" content="https://csrhdz.github.io/cat-game/">
+  <meta property="og:image" content="preview.jpg">
   <meta property="og:type" content="website">
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     :root {
       --red: #e50914;
-      --dark-red: #760000;
       --blue: #00a8ff;
       --pink: #ff006e;
       --gold: #ffd166;
-      --card: rgba(8, 8, 18, .72);
-      --line: rgba(255,255,255,.16);
       --text: #ffffff;
       --muted: rgba(255,255,255,.78);
-      --success: #27e08a;
-      --warning: #ffd166;
     }
 
-    html {
-      min-height: 100%;
-    }
+    html { min-height: 100%; }
 
     body {
       margin: 0;
@@ -47,11 +35,12 @@
       font-family: Arial, Helvetica, sans-serif;
       overflow-x: hidden;
       background:
-        linear-gradient(rgba(0,0,0,.28), rgba(0,0,0,.78)),
+        linear-gradient(rgba(0,0,0,.30), rgba(0,0,0,.82)),
         url('fondo.jpg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
+      transition: filter .2s ease, background .2s ease;
     }
 
     body::before {
@@ -61,7 +50,7 @@
       z-index: 0;
       pointer-events: none;
       background:
-        radial-gradient(circle at 50% 18%, rgba(255,0,0,.20), transparent 24%),
+        radial-gradient(circle at 50% 18%, rgba(255,0,0,.22), transparent 24%),
         radial-gradient(circle at 15% 75%, rgba(0,168,255,.23), transparent 32%),
         radial-gradient(circle at 85% 75%, rgba(255,0,110,.20), transparent 34%),
         repeating-linear-gradient(
@@ -72,6 +61,31 @@
           transparent 5px
         );
       mix-blend-mode: screen;
+    }
+
+    body.hell-1 { filter: contrast(1.08) saturate(1.1); }
+    body.hell-2 { filter: contrast(1.22) saturate(1.25) brightness(.95); }
+    body.hell-3 { filter: contrast(1.38) saturate(1.45) brightness(.85); }
+    body.hell-4 { filter: contrast(1.55) saturate(1.8) brightness(.76); }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: 8;
+      pointer-events: none;
+      opacity: 0;
+      background:
+        repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.08), rgba(255,255,255,.08) 1px, transparent 1px, transparent 4px);
+      mix-blend-mode: screen;
+    }
+
+    .noise.active { animation: noiseFlash .26s ease; }
+
+    @keyframes noiseFlash {
+      0% { opacity: 0; transform: translateX(0); }
+      20% { opacity: .30; transform: translateX(-8px); }
+      45% { opacity: .14; transform: translateX(8px); }
+      100% { opacity: 0; transform: translateX(0); }
     }
 
     .fire {
@@ -105,56 +119,65 @@
       opacity: 0;
     }
 
-    .lightning.active {
-      animation: lightningFlash .36s ease;
-    }
+    .lightning.active { animation: lightningFlash .36s ease; }
 
     @keyframes lightningFlash {
       0% { opacity: 0; }
-      8% { opacity: .82; }
+      8% { opacity: .85; }
       18% { opacity: 0; }
-      28% { opacity: .55; }
+      28% { opacity: .58; }
       100% { opacity: 0; }
     }
 
     .eyes-layer {
       position: fixed;
-      top: 13svh;
+      top: 12svh;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
       gap: clamp(58px, 15vw, 130px);
       z-index: 2;
       pointer-events: none;
-      opacity: .82;
+      opacity: .9;
     }
 
     .eye {
-      width: clamp(14px, 3.4vw, 28px);
-      height: clamp(14px, 3.4vw, 28px);
-      border-radius: 50%;
-      background: #ff0000;
+      width: clamp(34px, 7vw, 64px);
+      height: clamp(20px, 4.5vw, 38px);
+      border-radius: 60% 60% 55% 55%;
+      background: radial-gradient(circle at 50% 50%, #ff3737 0 20%, #5d0000 21% 50%, #120000 52% 100%);
       box-shadow:
         0 0 12px #ff0000,
         0 0 28px #ff0000,
         0 0 50px rgba(255,0,0,.8);
+      overflow: hidden;
+      position: relative;
       animation: blink 4.6s infinite;
     }
 
-    .eye:nth-child(2) {
-      animation-delay: .08s;
+    .pupil {
+      position: absolute;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #050000;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 6px rgba(0,0,0,.9);
+      transition: transform .06s linear;
     }
 
     @keyframes blink {
       0%, 88%, 100% { transform: scaleY(1); opacity: 1; }
-      92% { transform: scaleY(.08); opacity: .55; }
+      92% { transform: scaleY(.10); opacity: .7; }
       94% { transform: scaleY(1); opacity: 1; }
     }
 
     .layout {
       position: relative;
       z-index: 3;
-      width: min(100%, 560px);
+      width: min(100%, 570px);
       display: grid;
       gap: 14px;
       margin-top: clamp(80px, 18svh, 130px);
@@ -219,7 +242,7 @@
       width: 100%;
       padding: clamp(18px, 4vw, 28px);
       border-radius: 28px;
-      background: linear-gradient(180deg, rgba(7,7,18,.82), rgba(0,0,0,.72));
+      background: linear-gradient(180deg, rgba(7,7,18,.84), rgba(0,0,0,.76));
       border: 1px solid rgba(255,255,255,.18);
       box-shadow:
         0 28px 80px rgba(0,0,0,.68),
@@ -299,9 +322,7 @@
       transition: .16s ease;
     }
 
-    input::placeholder {
-      color: rgba(255,255,255,.42);
-    }
+    input::placeholder { color: rgba(255,255,255,.42); }
 
     input:focus {
       border-color: var(--red);
@@ -331,14 +352,12 @@
       filter: brightness(1.1);
     }
 
-    .btn:active {
-      transform: scale(.98);
-    }
+    .btn:active { transform: scale(.98); }
 
     .hint {
       margin-top: 14px;
       padding: 12px 13px;
-      min-height: 64px;
+      min-height: 74px;
       border-radius: 16px;
       background: rgba(0,0,0,.36);
       border: 1px solid rgba(255,255,255,.13);
@@ -361,6 +380,12 @@
       box-shadow: 0 0 18px rgba(255,209,102,.12);
     }
 
+    .hint.danger {
+      border-color: rgba(229,9,20,.72);
+      color: #ffdede;
+      box-shadow: 0 0 22px rgba(229,9,20,.22);
+    }
+
     .progress-wrap {
       height: 10px;
       margin-top: 13px;
@@ -377,18 +402,9 @@
       transition: width .25s ease;
     }
 
-    .counter {
-      margin-top: 9px;
-      display: flex;
-      justify-content: space-between;
-      color: rgba(255,255,255,.68);
-      font-size: 12px;
-      gap: 10px;
-    }
-
     .completed-list {
       margin-top: 14px;
-      max-height: 130px;
+      max-height: 120px;
       overflow-y: auto;
       border-radius: 16px;
       padding: 10px;
@@ -405,18 +421,15 @@
       animation: itemIn .2s ease;
     }
 
-    .completed-item:last-child {
-      border-bottom: none;
-    }
+    .completed-item:last-child { border-bottom: none; }
 
     @keyframes itemIn {
       from { opacity: 0; transform: translateY(-4px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .shake {
-      animation: shake .22s 2;
-    }
+    .shake { animation: shake .22s 2; }
+    .glitch { animation: glitch .2s 2; }
 
     @keyframes shake {
       0% { transform: translateX(0); }
@@ -424,6 +437,33 @@
       50% { transform: translateX(-5px); }
       75% { transform: translateX(3px); }
       100% { transform: translateX(0); }
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-6px, 3px); }
+      40% { transform: translate(7px, -2px); }
+      60% { transform: translate(-2px, -3px); }
+      80% { transform: translate(4px, 2px); }
+      100% { transform: translate(0); }
+    }
+
+    .whisper {
+      position: fixed;
+      z-index: 20;
+      pointer-events: none;
+      font-family: Consolas, monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,.65);
+      text-shadow: 0 0 10px rgba(255,0,0,.8);
+      opacity: 0;
+      animation: whisperFloat 1.4s ease forwards;
+    }
+
+    @keyframes whisperFloat {
+      0% { opacity: 0; transform: translateY(10px) scale(.96); }
+      20% { opacity: .86; }
+      100% { opacity: 0; transform: translateY(-34px) scale(1.03); }
     }
 
     .server-screen {
@@ -437,9 +477,7 @@
       font-family: 'Segoe UI', Arial, sans-serif;
     }
 
-    .server-screen.active {
-      display: block;
-    }
+    .server-screen.active { display: block; }
 
     .sad {
       font-size: clamp(70px, 15vw, 150px);
@@ -467,40 +505,14 @@
         background-attachment: scroll;
       }
 
-      .layout {
-        margin-top: 92px;
-      }
+      .layout { margin-top: 92px; }
 
       .card {
         padding: 18px;
         border-radius: 24px;
       }
 
-      .completed-list {
-        max-height: 110px;
-      }
-    }
-
-    @media (max-height: 760px) and (min-width: 600px) {
-      body {
-        align-items: flex-start;
-      }
-
-      .layout {
-        margin-top: 70px;
-      }
-
-      .title .small {
-        font-size: 24px;
-      }
-
-      .title .beast {
-        font-size: 56px;
-      }
-
-      .completed-list {
-        max-height: 90px;
-      }
+      .completed-list { max-height: 105px; }
     }
   </style>
 </head>
@@ -508,10 +520,11 @@
 <body>
   <div class="fire"></div>
   <div class="lightning" id="lightning"></div>
+  <div class="noise" id="noise"></div>
 
   <div class="eyes-layer">
-    <div class="eye"></div>
-    <div class="eye"></div>
+    <div class="eye"><div class="pupil"></div></div>
+    <div class="eye"><div class="pupil"></div></div>
   </div>
 
   <main class="layout">
@@ -537,6 +550,7 @@
           <label for="password">Password</label>
           <input id="password" type="text" autocomplete="off" placeholder="Ingresa tu password">
         </div>
+
         <button class="btn" type="button" id="btnRegister">Registrarme</button>
       </form>
 
@@ -544,6 +558,10 @@
 
       <div class="progress-wrap">
         <div class="progress" id="progress"></div>
+      </div>
+
+      <div class="completed-list" id="completedList">
+        <div class="completed-item">El sistema todavía no confía en ti.</div>
       </div>
     </section>
   </main>
@@ -559,210 +577,330 @@
       Código de detención: SERVER_NOT_AVAILABLE
     </div>
   </section>
-<script>
-  const form = document.getElementById('form');
-  const nameInput = document.getElementById('name');
-  const passwordInput = document.getElementById('password');
-  const hint = document.getElementById('hint');
-  const progress = document.getElementById('progress');
-  const completedList = document.getElementById('completedList');
-  const card = document.getElementById('card');
-  const lightning = document.getElementById('lightning');
-  const serverScreen = document.getElementById('serverScreen');
-  const serverText = document.getElementById('serverText');
 
-  let maxUnlocked = 0;
+  <script>
+    const btnRegister = document.getElementById('btnRegister');
+    const nameInput = document.getElementById('name');
+    const passwordInput = document.getElementById('password');
+    const hint = document.getElementById('hint');
+    const progress = document.getElementById('progress');
+    const completedList = document.getElementById('completedList');
+    const card = document.getElementById('card');
+    const lightning = document.getElementById('lightning');
+    const noise = document.getElementById('noise');
+    const serverScreen = document.getElementById('serverScreen');
+    const serverText = document.getElementById('serverText');
+    const pupils = document.querySelectorAll('.pupil');
 
-  const conditions = [
-    { message: 'El password debe tener mínimo 6 caracteres.', validate: p => p.length >= 6, done: 'Mínimo 6 caracteres' },
-    { message: 'Agrega una letra mayúscula.', validate: p => /[A-ZÁÉÍÓÚÑ]/.test(p), done: 'Tiene mayúscula' },
-    { message: 'Agrega una letra minúscula.', validate: p => /[a-záéíóúñ]/.test(p), done: 'Tiene minúscula' },
-    { message: 'Agrega un número.', validate: p => /\d/.test(p), done: 'Tiene número' },
-    { message: 'Agrega un carácter especial como @, #, $, %, & o !.', validate: p => /[@#$%&!*_.\-]/.test(p), done: 'Tiene carácter especial' },
-    { message: 'El password debe iniciar con mayúscula.', validate: p => /^[A-ZÁÉÍÓÚÑ]/.test(p), done: 'Inicia con mayúscula' },
-    { message: 'El password debe terminar con número.', validate: p => /\d$/.test(p), done: 'Termina con número' },
-    { message: 'Debe tener exactamente dos números.', validate: p => (p.match(/\d/g) || []).length === 2, done: 'Tiene exactamente dos números' },
-    { message: 'Agrega la letra Ñ.', validate: p => /ñ|Ñ/.test(p), done: 'Tiene Ñ' },
-    { message: 'Agrega un guion bajo "_".', validate: p => p.includes('_'), done: 'Tiene guion bajo' },
+    const conditions = [
+      { message: 'El password debe tener mínimo 6 caracteres.', validate: p => p.length >= 6, done: 'Longitud mínima aceptada.' },
+      { message: 'Agrega una letra mayúscula.', validate: p => /[A-ZÁÉÍÓÚÑ]/.test(p), done: 'Mayúscula detectada.' },
+      { message: 'Agrega una letra minúscula.', validate: p => /[a-záéíóúñ]/.test(p), done: 'Minúscula detectada.' },
+      { message: 'Agrega un número.', validate: p => /\d/.test(p), done: 'Número detectado.' },
+      { message: 'Agrega un carácter especial como @, #, $, %, & o !.', validate: p => /[@#$%&!*_.\-]/.test(p), done: 'Símbolo inicial aceptado.' },
+      { message: 'El password debe iniciar con mayúscula.', validate: p => /^[A-ZÁÉÍÓÚÑ]/.test(p), done: 'Inicio en mayúscula.' },
+      { message: 'El password debe terminar con número.', validate: p => /\d$/.test(p), done: 'Cierre numérico.' },
+      { message: 'Debe tener exactamente dos números.', validate: p => (p.match(/\d/g) || []).length === 2, done: 'Dos números exactos.' },
+      { message: 'Agrega la letra Ñ.', validate: p => /ñ|Ñ/.test(p), done: 'Ñ aceptada.' },
+      { message: 'Agrega un guion bajo "_".', validate: p => p.includes('_'), done: 'Guion bajo aceptado.' },
 
-    { message: 'Agrega la palabra bestia.', validate: p => /bestia/i.test(p), done: 'Tiene la palabra bestia' },
-    { message: 'Ahora elimina la palabra bestia.', validate: p => !/bestia/i.test(p), done: 'Ya eliminaste bestia' },
-    { message: 'Agrega un emoji.', validate: p => /[\u{1F300}-\u{1FAFF}]/u.test(p), done: 'Tiene emoji' },
-    { message: 'Agrega un punto ".".', validate: p => p.includes('.'), done: 'Tiene punto' },
-    { message: 'Agrega una coma ",".', validate: p => p.includes(','), done: 'Tiene coma' },
-    { message: 'Agrega un signo de pregunta.', validate: p => p.includes('?') || p.includes('¿'), done: 'Tiene pregunta' },
-    { message: 'Agrega un signo de admiración.', validate: p => p.includes('!') || p.includes('¡'), done: 'Tiene admiración' },
-    { message: 'Agrega la palabra CPU.', validate: p => /CPU/.test(p), done: 'Tiene CPU' },
-    { message: 'Agrega la palabra dll.', validate: p => /dll/i.test(p), done: 'Tiene dll' },
-    { message: 'Agrega la palabra apk.', validate: p => /apk/i.test(p), done: 'Tiene apk' },
+      { message: 'Agrega la palabra bestia.', validate: p => /bestia/i.test(p), done: 'La Bestia fue nombrada.' },
+      { message: 'Ahora elimina la palabra bestia. No le gusta que la invoquen dos veces.', validate: p => !/bestia/i.test(p), done: 'La Bestia fue ocultada.' },
+      { message: 'Agrega un emoji.', validate: p => /[\u{1F300}-\u{1FAFF}]/u.test(p), done: 'Emoji detectado.' },
+      { message: 'Agrega un punto ".".', validate: p => p.includes('.'), done: 'Punto detectado.' },
+      { message: 'Agrega una coma ",".', validate: p => p.includes(','), done: 'Coma detectada.' },
+      { message: 'Agrega un signo de pregunta.', validate: p => p.includes('?') || p.includes('¿'), done: 'Pregunta detectada.' },
+      { message: 'Agrega un signo de admiración.', validate: p => p.includes('!') || p.includes('¡'), done: 'Admiración detectada.' },
+      { message: 'Agrega la palabra CPU.', validate: p => /CPU/.test(p), done: 'CPU detectado.' },
+      { message: 'Agrega la palabra dll.', validate: p => /dll/i.test(p), done: 'DLL detectado.' },
+      { message: 'Agrega la palabra apk.', validate: p => /apk/i.test(p), done: 'APK detectado.' },
 
-    { message: 'Agrega el número 777.', validate: p => p.includes('777'), done: 'Tiene 777' },
-    { message: 'Agrega el número 666.', validate: p => p.includes('666'), done: 'Tiene 666' },
-    { message: 'El password debe tener más de 15 caracteres.', validate: p => p.length > 15, done: 'Más de 15 caracteres' },
-    { message: 'El password debe tener menos de 40 caracteres.', validate: p => p.length < 40, done: 'Menos de 40 caracteres' },
-    { message: 'Agrega una vocal con acento.', validate: p => /[áéíóúÁÉÍÓÚ]/.test(p), done: 'Tiene vocal con acento' },
-    { message: 'Agrega una palabra en inglés como game, play, dark, fire o win.', validate: p => /(game|play|dark|fire|win)/i.test(p), done: 'Tiene palabra en inglés' },
-    { message: 'Agrega una palabra en español como juego, fuego, sombra o clave.', validate: p => /(juego|fuego|sombra|clave)/i.test(p), done: 'Tiene palabra en español' },
-    { message: 'Agrega un símbolo matemático como +, -, *, / o =.', validate: p => /[+\-*/=]/.test(p), done: 'Tiene símbolo matemático' },
-    { message: 'Agrega una diagonal "/".', validate: p => p.includes('/'), done: 'Tiene diagonal' },
-    { message: 'Agrega una diagonal invertida "\\\\".', validate: p => p.includes('\\'), done: 'Tiene diagonal invertida' },
+      { message: 'Agrega el número 777.', validate: p => p.includes('777'), done: '777 aceptado.' },
+      { message: 'Ahora agrega 666. El sistema pidió equilibrio.', validate: p => p.includes('666'), done: '666 aceptado.' },
+      { message: 'El password debe tener más de 15 caracteres.', validate: p => p.length > 15, done: 'Más de 15 caracteres.' },
+      { message: 'El password debe tener menos de 40 caracteres.', validate: p => p.length < 40, done: 'Menos de 40 caracteres.' },
+      { message: 'Agrega una vocal con acento.', validate: p => /[áéíóúÁÉÍÓÚ]/.test(p), done: 'Acento detectado.' },
+      { message: 'Agrega una palabra en inglés: game, play, dark, fire o win.', validate: p => /(game|play|dark|fire|win)/i.test(p), done: 'Inglés aceptado.' },
+      { message: 'Agrega una palabra en español: juego, fuego, sombra o clave.', validate: p => /(juego|fuego|sombra|clave)/i.test(p), done: 'Español aceptado.' },
+      { message: 'Agrega un símbolo matemático como +, -, *, / o =.', validate: p => /[+\-*/=]/.test(p), done: 'Símbolo matemático aceptado.' },
+      { message: 'Agrega una diagonal "/".', validate: p => p.includes('/'), done: 'Diagonal aceptada.' },
+      { message: 'Agrega una diagonal invertida "\\\\".', validate: p => p.includes('\\'), done: 'Diagonal invertida aceptada.' },
 
-    { message: 'Agrega un paréntesis.', validate: p => /[()]/.test(p), done: 'Tiene paréntesis' },
-    { message: 'Agrega un corchete.', validate: p => /[\[\]]/.test(p), done: 'Tiene corchete' },
-    { message: 'Agrega una llave.', validate: p => /[{}]/.test(p), done: 'Tiene llave' },
-    { message: 'Agrega una letra griega como Ω, α o β.', validate: p => /[Ωαβ]/.test(p), done: 'Tiene letra griega' },
-    { message: 'Agrega un símbolo musical como ♪ o ♫.', validate: p => /[♪♫]/.test(p), done: 'Tiene símbolo musical' },
-    { message: 'Agrega un símbolo zodiacal como ♈ o ♌.', validate: p => /[♈♉♊♋♌♍♎♏♐♑♒♓]/.test(p), done: 'Tiene símbolo zodiacal' },
-    { message: 'Agrega un color hexadecimal como #FF0000.', validate: p => /#[0-9a-fA-F]{6}/.test(p), done: 'Tiene color hexadecimal' },
-    { message: 'Agrega la IP 127.0.0.1.', validate: p => p.includes('127.0.0.1'), done: 'Tiene IP local' },
-    { message: 'Agrega una extensión .exe.', validate: p => /\.exe/i.test(p), done: 'Tiene .exe' },
-    { message: 'Agrega una extensión .sys.', validate: p => /\.sys/i.test(p), done: 'Tiene .sys' },
+      { message: 'Agrega un paréntesis.', validate: p => /[()]/.test(p), done: 'Paréntesis aceptado.' },
+      { message: 'Agrega un corchete.', validate: p => /[\[\]]/.test(p), done: 'Corchete aceptado.' },
+      { message: 'Agrega una llave.', validate: p => /[{}]/.test(p), done: 'Llave aceptada.' },
+      { message: 'Agrega una letra griega como Ω, α o β.', validate: p => /[Ωαβ]/.test(p), done: 'Letra griega detectada.' },
+      { message: 'Agrega un símbolo musical como ♪ o ♫.', validate: p => /[♪♫]/.test(p), done: 'Símbolo musical detectado.' },
+      { message: 'Agrega un símbolo zodiacal como ♈ o ♌.', validate: p => /[♈♉♊♋♌♍♎♏♐♑♒♓]/.test(p), done: 'Zodiaco aceptado.' },
+      { message: 'Agrega un color hexadecimal como #FF0000.', validate: p => /#[0-9a-fA-F]{6}/.test(p), done: 'Color hexadecimal detectado.' },
+      { message: 'Agrega la IP 127.0.0.1.', validate: p => p.includes('127.0.0.1'), done: 'IP local aceptada.' },
+      { message: 'Agrega una extensión .exe.', validate: p => /\.exe/i.test(p), done: 'EXE aceptado.' },
+      { message: 'Agrega una extensión .sys.', validate: p => /\.sys/i.test(p), done: 'SYS aceptado.' },
 
-    { message: 'Agrega una extensión .jpg.', validate: p => /\.jpg/i.test(p), done: 'Tiene .jpg' },
-    { message: 'Agrega la palabra registro.', validate: p => /registro/i.test(p), done: 'Tiene registro' },
-    { message: 'Agrega la palabra validado.', validate: p => /validado/i.test(p), done: 'Tiene validado' },
-    { message: 'Agrega la palabra acceso.', validate: p => /acceso/i.test(p), done: 'Tiene acceso' },
-    { message: 'Agrega la palabra final.', validate: p => /final/i.test(p), done: 'Tiene final' },
-    { message: 'Agrega la palabra temporal.', validate: p => /temporal/i.test(p), done: 'Tiene temporal' },
-    { message: 'Agrega la palabra seguro.', validate: p => /seguro/i.test(p), done: 'Tiene seguro' },
-    { message: 'Agrega la palabra sistema.', validate: p => /sistema/i.test(p), done: 'Tiene sistema' },
-    { message: 'Agrega la palabra perfecto.', validate: p => /perfecto/i.test(p), done: 'Tiene perfecto' },
-    { message: 'Agrega la palabra imposible.', validate: p => /imposible/i.test(p), done: 'Tiene imposible' }
-  ];
-const btnRegister = document.getElementById('btnRegister');
+      { message: 'Agrega una extensión .jpg.', validate: p => /\.jpg/i.test(p), done: 'JPG aceptado.' },
+      { message: 'Agrega la palabra registro.', validate: p => /registro/i.test(p), done: 'Registro detectado.' },
+      { message: 'Agrega la palabra validado.', validate: p => /validado/i.test(p), done: 'Validado detectado.' },
+      { message: 'Agrega la palabra acceso.', validate: p => /acceso/i.test(p), done: 'Acceso detectado.' },
+      { message: 'Agrega la palabra final.', validate: p => /final/i.test(p), done: 'Final detectado.' },
+      { message: 'Agrega la palabra temporal.', validate: p => /temporal/i.test(p), done: 'Temporal detectado.' },
+      { message: 'Agrega la palabra seguro.', validate: p => /seguro/i.test(p), done: 'Seguro detectado.' },
+      { message: 'Agrega la palabra sistema.', validate: p => /sistema/i.test(p), done: 'Sistema detectado.' },
+      { message: 'Agrega la palabra perfecto.', validate: p => /perfecto/i.test(p), done: 'Perfecto detectado.' },
+      { message: 'Agrega la palabra imposible.', validate: p => /imposible/i.test(p), done: 'Imposible detectado.' }
+    ];
 
-btnRegister.addEventListener('click', () => {
-  validatePassword();
-});
-  
+    const systemMessages = {
+      soft: [
+        'No se pudo completar el registro.',
+        'El sistema necesita un dato adicional.',
+        'La información todavía no es suficiente.',
+        'Registro detenido temporalmente.'
+      ],
+      medium: [
+        'El sistema detectó una inconsistencia.',
+        'Algo no coincide con el patrón esperado.',
+        'Acceso retenido.',
+        'Tu contraseña todavía no cumple con el protocolo.'
+      ],
+      hard: [
+        'Actividad inusual detectada.',
+        'No intentes saltarte los requisitos.',
+        'El registro no confía en esta combinación.',
+        'Tu patrón de escritura fue marcado como sospechoso.'
+      ],
+      nightmare: [
+        'Te estamos observando.',
+        'Cada cambio quedó registrado.',
+        'La Bestia no acepta errores.',
+        'El sistema ya aprendió tu forma de escribir.'
+      ],
+      final: [
+        'Eso estuvo demasiado cerca.',
+        'La Bestia está despierta.',
+        'No borres nada ahora.',
+        'El registro sabe lo que intentaste hacer.'
+      ]
+    };
 
-  passwordInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      validatePassword();
-    }
-  });
+    btnRegister.addEventListener('click', validatePassword);
 
-  function validatePassword() {
-    const name = nameInput.value.trim();
-    const password = passwordInput.value;
-
-    if (!name) {
-      fail('Ingresa tu nombre para continuar.');
-      return;
-    }
-
-    if (!password) {
-      fail('Ingresa tu password para continuar.');
-      return;
-    }
-
-    let firstInvalidIndex = -1;
-
-    for (let i = 0; i < conditions.length; i++) {
-      if (!conditions[i].validate(password)) {
-        firstInvalidIndex = i;
-        break;
+    passwordInput.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        validatePassword();
       }
-    }
-
-    const completedNow = firstInvalidIndex === -1 ? conditions.length : firstInvalidIndex;
-
-    maxUnlocked = completedNow;
-    updateProgress(completedNow);
-    renderCompleted(completedNow);
-
-    if (firstInvalidIndex !== -1) {
-      fail(
-  `Error en el registro.\n` +
-  conditions[firstInvalidIndex].message
-);
-      return;
-    }
-
-    hint.className = 'hint ok';
-    hint.textContent = 'VALIDATION_COMPLETE\nProcesando registro...';
-
-    setTimeout(showServerUnavailable, 900);
-  }
-
-  function fail(message) {
-    hint.className = 'hint warn';
-    hint.textContent = `No se pudo completar el registro.\n${message}`;
-    card.classList.remove('shake');
-    void card.offsetWidth;
-    card.classList.add('shake');
-    randomLightning();
-  }
-
-  function updateProgress(doneCount) {
-    const pct = Math.round((doneCount / conditions.length) * 100);
-    progress.style.width = pct + '%';
-  }
-
-  function renderCompleted(doneCount) {
-    completedList.innerHTML = '';
-
-    if (doneCount === 0) {
-      completedList.innerHTML = '<div class="completed-item">Sin validaciones completadas.</div>';
-      return;
-    }
-
-    const title = document.createElement('div');
-    title.className = 'completed-item';
-    title.textContent = `Progreso real: ${doneCount} / ${conditions.length}`;
-    completedList.appendChild(title);
-
-    conditions.slice(0, doneCount).slice(-8).forEach((condition, index) => {
-      const div = document.createElement('div');
-      div.className = 'completed-item';
-      div.textContent = `✓ ${condition.done}`;
-      completedList.appendChild(div);
     });
-  }
 
-  function showServerUnavailable() {
-    serverScreen.classList.add('active');
-    let pct = 0;
+    document.addEventListener('mousemove', event => {
+      const x = (event.clientX / window.innerWidth - 0.5) * 18;
+      const y = (event.clientY / window.innerHeight - 0.5) * 10;
 
-    const interval = setInterval(() => {
-      pct += Math.floor(Math.random() * 13) + 5;
+      pupils.forEach(pupil => {
+        pupil.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+      });
+    });
 
-      if (pct >= 100) {
-        pct = 100;
-        clearInterval(interval);
-        setTimeout(resetAll, 1300);
+    function validatePassword() {
+      const name = nameInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!name) {
+        fail('Registro detenido.\nIngresa tu nombre para continuar.', 0);
+        return;
       }
 
-      serverText.innerHTML =
-        `Recopilando información del error... ${pct}% completado<br><br>` +
-        `Código de detención: SERVER_NOT_AVAILABLE<br>` +
-        `Archivo afectado: registro_final.dll<br>` +
-        `Estado: intente más tarde su registro`;
-    }, 230);
-  }
+      if (!password) {
+        fail(`${name}, el campo está vacío.\nIngresa tu password para continuar.`, 0);
+        return;
+      }
 
-  function resetAll() {
-    serverScreen.classList.remove('active');
-    maxUnlocked = 0;
-    passwordInput.value = '';
-    progress.style.width = '0%';
-    hint.className = 'hint warn';
-    hint.textContent = 'Servidor reiniciado.\nIntente más tarde su registro.';
-    completedList.innerHTML = '<div class="completed-item">Sin validaciones completadas.</div>';
-  }
+      let firstInvalidIndex = -1;
 
-  function randomLightning() {
-    lightning.classList.add('active');
-    setTimeout(() => lightning.classList.remove('active'), 360);
-  }
+      for (let i = 0; i < conditions.length; i++) {
+        if (!conditions[i].validate(password)) {
+          firstInvalidIndex = i;
+          break;
+        }
+      }
 
-  setInterval(() => {
-    if (Math.random() < .22) {
-      randomLightning();
+      const completedNow = firstInvalidIndex === -1 ? conditions.length : firstInvalidIndex;
+
+      updateProgress(completedNow);
+      renderCompleted(completedNow);
+      intensify(completedNow);
+
+      if (firstInvalidIndex !== -1) {
+        const msg = getBrutalMessage(firstInvalidIndex, name);
+        fail(`${msg}\n${conditions[firstInvalidIndex].message}`, firstInvalidIndex);
+        return;
+      }
+
+      hint.className = 'hint ok';
+      hint.textContent = `${name}, registro aceptado.\nProcesando acceso seguro...`;
+      extremeGlitch();
+      setTimeout(showServerUnavailable, 900);
     }
-  }, 3600);
-</script>
-                    
+
+    function getBrutalMessage(index, name) {
+      let bank;
+
+      if (index < 10) bank = systemMessages.soft;
+      else if (index < 25) bank = systemMessages.medium;
+      else if (index < 40) bank = systemMessages.hard;
+      else if (index < 48) bank = systemMessages.nightmare;
+      else bank = systemMessages.final;
+
+      let message = bank[Math.floor(Math.random() * bank.length)];
+
+      if (index >= 30 && Math.random() < .6) {
+        message = `${name}, ${message.charAt(0).toLowerCase()}${message.slice(1)}`;
+      }
+
+      return message;
+    }
+
+    function fail(message, index) {
+      hint.className = index >= 25 ? 'hint danger' : 'hint warn';
+      hint.textContent = message;
+
+      card.classList.remove('shake', 'glitch');
+      void card.offsetWidth;
+      card.classList.add(index >= 20 ? 'glitch' : 'shake');
+
+      randomLightning();
+
+      if (index >= 8) flashNoise();
+      if (index >= 12) spawnWhisper();
+      if (index >= 25) spawnWhisper();
+      if (index >= 35) spawnWhisper();
+      if (index >= 40) extremeGlitch();
+    }
+
+    function updateProgress(doneCount) {
+      const pct = Math.round((doneCount / conditions.length) * 100);
+      progress.style.width = pct + '%';
+    }
+
+    function renderCompleted(doneCount) {
+      completedList.innerHTML = '';
+
+      if (doneCount === 0) {
+        completedList.innerHTML = '<div class="completed-item">El sistema todavía no confía en ti.</div>';
+        return;
+      }
+
+      const frases = [
+        'Fragmentos aceptados.',
+        'El acceso se está formando.',
+        'La Bestia reconoce parte de tu clave.',
+        'Los requisitos anteriores siguen vivos.',
+        'No rompas lo que ya despertaste.'
+      ];
+
+      const title = document.createElement('div');
+      title.className = 'completed-item';
+      title.textContent = frases[Math.min(Math.floor(doneCount / 10), frases.length - 1)];
+      completedList.appendChild(title);
+
+      conditions.slice(0, doneCount).slice(-6).forEach(condition => {
+        const div = document.createElement('div');
+        div.className = 'completed-item';
+        div.textContent = `✓ ${condition.done}`;
+        completedList.appendChild(div);
+      });
+    }
+
+    function intensify(doneCount) {
+      document.body.classList.remove('hell-1', 'hell-2', 'hell-3', 'hell-4');
+
+      if (doneCount >= 10) document.body.classList.add('hell-1');
+      if (doneCount >= 22) document.body.classList.add('hell-2');
+      if (doneCount >= 35) document.body.classList.add('hell-3');
+      if (doneCount >= 45) document.body.classList.add('hell-4');
+    }
+
+    function showServerUnavailable() {
+      serverScreen.classList.add('active');
+      let pct = 0;
+
+      const interval = setInterval(() => {
+        pct += Math.floor(Math.random() * 13) + 5;
+
+        if (pct >= 100) {
+          pct = 100;
+          clearInterval(interval);
+          setTimeout(resetAll, 1400);
+        }
+
+        serverText.innerHTML =
+          `Recopilando información del error... ${pct}% completado<br><br>` +
+          `Código de detención: SERVER_NOT_AVAILABLE<br>` +
+          `Archivo afectado: registro_final.dll<br>` +
+          `Estado: intente más tarde su registro<br>` +
+          `Detalle: contraseña demasiado compatible con La Bestia`;
+      }, 230);
+    }
+
+    function resetAll() {
+      serverScreen.classList.remove('active');
+      passwordInput.value = '';
+      progress.style.width = '0%';
+      document.body.classList.remove('hell-1', 'hell-2', 'hell-3', 'hell-4');
+      hint.className = 'hint warn';
+      hint.textContent = 'Servidor reiniciado.\nIntente más tarde su registro.';
+      completedList.innerHTML = '<div class="completed-item">El sistema todavía no confía en ti.</div>';
+    }
+
+    function randomLightning() {
+      lightning.classList.add('active');
+      setTimeout(() => lightning.classList.remove('active'), 360);
+    }
+
+    function flashNoise() {
+      noise.classList.add('active');
+      setTimeout(() => noise.classList.remove('active'), 260);
+    }
+
+    function extremeGlitch() {
+      flashNoise();
+      randomLightning();
+      document.body.style.transform = 'translateX(-3px)';
+      setTimeout(() => document.body.style.transform = 'translateX(3px)', 70);
+      setTimeout(() => document.body.style.transform = '', 140);
+    }
+
+    function spawnWhisper() {
+      const div = document.createElement('div');
+      div.className = 'whisper';
+
+      const name = nameInput.value.trim() || '...';
+
+      const frases = [
+        'te falta algo...',
+        'no borres eso...',
+        `${name}... casi...`,
+        'eso no era...',
+        'otra vez...',
+        'la bestia te ve...',
+        `${name}, cuidado...`,
+        'no lo hagas mal...',
+        'sigue escribiendo...',
+        'ya despertaste algo...'
+      ];
+
+      div.textContent = frases[Math.floor(Math.random() * frases.length)];
+      div.style.left = Math.random() * 80 + 'vw';
+      div.style.top = Math.random() * 80 + 'vh';
+
+      document.body.appendChild(div);
+      setTimeout(() => div.remove(), 1400);
+    }
+
+    setInterval(() => {
+      if (Math.random() < .24) {
+        randomLightning();
+      }
+    }, 3500);
+  </script>
 </body>
 </html>
