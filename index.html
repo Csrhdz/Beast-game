@@ -774,6 +774,7 @@ password.addEventListener("input", () => {
 });
 
 const conditions = [
+  const conditions = [
   { message: 'El password debe tener mínimo 6 caracteres.', validate: p => p.length >= 6 },
   { message: 'El password debe tener una letra mayúscula.', validate: p => /[A-ZÁÉÍÓÚÑ]/.test(p) },
   { message: 'El password debe tener una letra minúscula.', validate: p => /[a-záéíóúñ]/.test(p) },
@@ -785,44 +786,44 @@ const conditions = [
   { message: 'El password debe tener el resultado de 5 x 5.', validate: p => p.includes('25') },
   { message: 'El password debe tener el resultado de 12 + 12.', validate: p => p.includes('24') },
 
-  { message: 'El password debe tener algo redondo, caliente y que sale en la mañana.', validate: p => /sol|☀️|🌞/i.test(p) },
-  { message: 'El password debe tener un animal que ladra.', validate: p => /perro|🐶|🐕/i.test(p) },
-  { message: 'El password debe tener un animal que dice miau.', validate: p => /gato|🐱|🐈/i.test(p) },
-  { message: 'El password debe tener un animal que nada.', validate: p => /pez|🐟/i.test(p) },
-  { message: 'El password debe tener un animal que vuela.', validate: p => /ave|pajaro|pájaro|🐦/i.test(p) },
-  { message: 'El password debe tener un animal que hace miel.', validate: p => /abeja|🐝/i.test(p) },
+  { message: 'El password debe tener algo redondo, caliente y que sale en la mañana', validate: p => /sol|☀️|🌞/i.test(p) },
+  { message: 'El password debe tener un animal que ladra', validate: p => /perro|🐶|🐕/i.test(p) },
+  { message: 'El password debe tener un animal que dice miau', validate: p => /gato|🐱|🐈/i.test(p) },
+  { message: 'El password debe tener un animal que nada', validate: p => /pez|🐟/i.test(p) },
+  { message: 'El password debe tener un animal que vuela', validate: p => /ave|pajaro|pájaro|🐦/i.test(p) },
+  { message: 'El password debe tener un animal que hace miel', validate: p => /abeja|🐝/i.test(p) },
 
-  { message: 'El password debe tener una fruta roja y dulce.', validate: p => /fresa|🍓/i.test(p) },
-  { message: 'El password debe tener una fruta amarilla y tropical.', validate: p => /mango|🥭/i.test(p) },
-  { message: 'El password debe tener algo dulce que hacen las abejas.', validate: p => /miel|🍯/i.test(p) },
-  { message: 'El password debe tener algo salado que va en la comida.', validate: p => /sal/i.test(p) },
+  { message: 'El password debe tener una fruta roja y dulce empieza con f ', validate: p => /fresa|🍓/i.test(p) },
+  { message: 'El password debe tener una fruta amarilla y tropical empieza con m', validate: p => /mango|🥭/i.test(p) },
+  { message: 'El password debe tener algo dulce que hacen las abejas ', validate: p => /miel|🍯/i.test(p) },
+  { message: 'El password debe tener algo para hacer salada la comida ', validate: p => /sal|🧂/i.test(p) },
 
-  { message: 'El password debe tener el número de emergencia en México.', validate: p => p.includes('911') },
-  { message: 'El password debe tener un año del COVID.', validate: p => p.includes('2020') || p.includes('2021') },
-  { message: 'El password debe tener el número de la Bestia.', validate: p => p.includes('666') },
-  { message: 'El password debe tener el número de la suerte.', validate: p => p.includes('777') },
+  { message: 'El password debe tener el número de emergencia en México 🚨', validate: p => p.includes('911') },
+  { message: 'El password debe tener un año del COVID 🦠', validate: p => p.includes('2020') || p.includes('2021') },
+  { message: 'El password debe tener el número de la Bestia 😈', validate: p => p.includes('666') },
+  { message: 'El password debe tener el número de la suerte 3 veces 🍀', validate: p => p.includes('777') },
 
-  { message: 'El password debe tener un emoji.', validate: p => /[\u{1F300}-\u{1FAFF}]/u.test(p) },
-  { message: 'El password debe tener fuego.', validate: p => /fuego|🔥/i.test(p) },
-  { message: 'El password debe tener risa.', validate: p => /jaja|😂|🤣/i.test(p) },
-  { message: 'El password debe tener miedo.', validate: p => /boo|😱|👻/i.test(p) },
+  { message: 'El password debe tener un emoji', validate: p => /[\u{1F300}-\u{1FAFF}]/u.test(p) },
+  { message: 'El password debe tener fuego', validate: p => /fuego|🔥/i.test(p) },
+  { message: 'El password debe tener risa', validate: p => /jaja|😂|🤣/i.test(p) },
+  { message: 'El password debe tener miedo', validate: p => /boo|miedo|😱|👻/i.test(p) },
 
   { message: 'El password debe tener la letra Ñ.', validate: p => /ñ|Ñ/.test(p) },
-  { message: 'El password debe tener un guion bajo.', validate: p => p.includes('_') },
-  { message: 'El password debe tener un punto.', validate: p => p.includes('.') },
-  { message: 'El password debe tener una coma.', validate: p => p.includes(',') },
-  { message: 'El password debe tener una pregunta.', validate: p => p.includes('?') || p.includes('¿') },
-  { message: 'El password debe tener admiración.', validate: p => p.includes('!') || p.includes('¡') },
+  { message: 'El password debe tener un guion bajo _', validate: p => p.includes('_') },
+  { message: 'El password debe tener un punto .', validate: p => p.includes('.') },
+  { message: 'El password debe tener una coma ,', validate: p => p.includes(',') },
+  { message: 'El password debe tener una pregunta', validate: p => p.includes('?') || p.includes('¿') },
+  { message: 'El password debe tener un signo de admiración', validate: p => p.includes('!') || p.includes('¡') },
 
-  { message: 'El password debe tener un color primario.', validate: p => /rojo|azul|verde|🔴|🔵|🟢/i.test(p) },
-  { message: 'El password debe tener algo imposible.', validate: p => /imposible/i.test(p) },
+  { message: 'El password debe tener un color primario 🔴🔵🟢', validate: p => /rojo|azul|verde|🔴|🔵|🟢/i.test(p) },
+  { message: 'El password debe tener cómo te sientes en este momento 🙂',validate: p => /feliz|triste|enojado|molesto|frustrado|cansado|bien|mal|🙂|😊|😃|😂|😢|😭|😡|😤|😩|😔|😐/i.test(p)},
 
   { message: 'El password debe tener más de 20 caracteres.', validate: p => p.length > 20 },
   { message: 'El password debe tener menos de 90 caracteres (Puedes cambiar palabras a emojis).', validate: p => p.length < 90 },
 
   { message: 'El password debe tener una vocal con acento.', validate: p => /[áéíóúÁÉÍÓÚ]/.test(p) },
-  { message: 'El password debe tener una diagonal.', validate: p => p.includes('/') },
-  { message: 'El password debe tener paréntesis.', validate: p => /[()]/.test(p) },
+  { message: 'El password debe tener una diagonal /', validate: p => p.includes('/') },
+  { message: 'El password debe tener paréntesis ()', validate: p => /[()]/.test(p) },
 
   { message: 'El password debe tener la palabra final.', validate: p => /final/i.test(p) },
   { message: 'El password debe tener la palabra acceso.', validate: p => /acceso/i.test(p) },
@@ -1171,40 +1172,46 @@ function showFinalValidationPopup() {
   finalTitle.textContent = 'Validando usuario...';
   finalPercent.textContent = '0%';
   finalBar.style.width = '0%';
-  finalLog.textContent = 'Inicializando sistema...';
+  finalLog.textContent = 'Inicializando núcleo de acceso...';
   finalError.classList.remove('active');
   restartBtn.classList.remove('active');
 
+  const name = nameInput.value.trim() || 'usuario';
+
   const steps = [
-    'Validando nombre de usuario...',
+    `Detectando usuario: ${name}`,
+    'Analizando nombre...',
+    'Nombre aceptado.',
     'Validando password...',
     'Password aceptado.',
+    'Cifrando contraseña...',
+    'Generando token de acceso...',
     'Cargando perfil...',
-    'Cargando mapas del juego...',
-    'Sincronizando progreso...',
-    'Verificando conexión con la Bestia...',
-    'Cargando permisos...',
-    'Validando sesión temporal...',
-    'Conectando al servicio principal...',
-    'Iniciando...',
-    'ERROR: conexión rechazada.',
-    'ERROR: servicio no disponible.',
-    'Falló el registro.'
+    'Cargando inventario...',
+    'Cargando mapas...',
+    'Cargando progreso...',
+    'Sincronizando sesión...',
+    'Verificando conexión con La Bestia...',
+    'Permisos concedidos.',
+    'Abriendo portal...',
+    'Iniciando partida...',
+    'ERROR: respuesta inesperada del servidor.',
+    'ERROR: La Bestia rechazó el acceso.',
+    'Fallo crítico en registro.',
+    'Cerrando sesión...'
   ];
 
   let pct = 0;
   let stepIndex = 0;
 
   const interval = setInterval(() => {
-    pct += Math.floor(Math.random() * 9) + 4;
+    pct += Math.floor(Math.random() * 7) + 3;
 
-    if (pct > 96 && stepIndex < steps.length - 3) {
-      pct = 96;
+    if (pct > 97 && stepIndex < steps.length - 4) {
+      pct = 97;
     }
 
-    if (pct >= 100) {
-      pct = 100;
-    }
+    if (pct >= 100) pct = 100;
 
     finalPercent.textContent = pct + '%';
     finalBar.style.width = pct + '%';
@@ -1219,16 +1226,24 @@ function showFinalValidationPopup() {
       clearInterval(interval);
 
       finalTitle.textContent = 'Registro fallido';
+      finalError.innerHTML = `
+        ERROR: no se pudo conectar al servicio.<br>
+        La Bestia cerró la puerta.<br>
+        Falló el registro del usuario.<br>
+        Código: BEAST_ACCESS_DENIED
+      `;
       finalError.classList.add('active');
       restartBtn.classList.add('active');
+
       playAlert();
       extremeGlitch();
+
+      setTimeout(() => {
+        location.reload();
+      }, 4500);
     }
-  }, 520);
+  }, 460);
 }
-restartBtn.addEventListener('click', () => {
-  location.reload();
-});
     
   </script>
 </body>
