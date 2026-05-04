@@ -1,0 +1,707 @@
+<!DOCTYPE html><html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El mejor juego del mundo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }:root {
+  --bg1: #050510;
+  --bg2: #151537;
+  --card: rgba(255,255,255,.09);
+  --line: rgba(255,255,255,.16);
+  --red: #eb4d4b;
+  --blue: #22a6b3;
+  --green: #00d084;
+  --yellow: #f9ca24;
+  --purple: #be2edd;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(34,166,179,.28), transparent 28%),
+    radial-gradient(circle at 85% 90%, rgba(190,46,221,.22), transparent 34%),
+    linear-gradient(135deg, var(--bg1), var(--bg2) 58%, #000);
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.025),
+    rgba(255,255,255,.025) 1px,
+    transparent 1px,
+    transparent 5px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.app {
+  width: min(100%, 520px);
+  position: relative;
+  z-index: 2;
+}
+
+.card {
+  padding: clamp(18px, 4vw, 30px);
+  border-radius: 30px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: 0 28px 90px rgba(0,0,0,.62);
+  backdrop-filter: blur(15px);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(34,166,179,.8), rgba(190,46,221,.65), rgba(235,77,75,.7));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.15);
+  font-size: 12px;
+  color: #dff9fb;
+  margin-bottom: 12px;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(30px, 8vw, 48px);
+  line-height: .95;
+  letter-spacing: -1.5px;
+}
+
+.highlight {
+  color: var(--yellow);
+  text-shadow: 0 0 20px rgba(249,202,36,.45);
+}
+
+.subtitle {
+  margin: 12px 0 22px;
+  color: rgba(255,255,255,.8);
+  font-size: clamp(14px, 3.5vw, 16px);
+  line-height: 1.45;
+}
+
+.field {
+  text-align: left;
+  margin-bottom: 14px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  opacity: .85;
+  margin-bottom: 7px;
+  font-weight: 800;
+}
+
+input {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.32);
+  color: white;
+  border-radius: 16px;
+  padding: 14px 15px;
+  font-size: 16px;
+  outline: none;
+  transition: .15s ease;
+}
+
+input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(34,166,179,.15);
+}
+
+.btn {
+  width: 100%;
+  border: none;
+  border-radius: 18px;
+  padding: 15px 18px;
+  font-size: 16px;
+  font-weight: 950;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  box-shadow: 0 14px 28px rgba(0,0,0,.32);
+  transition: transform .15s ease, filter .15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.btn:active {
+  transform: scale(.98);
+}
+
+.status {
+  margin-top: 16px;
+  min-height: 92px;
+  padding: 13px;
+  border-radius: 18px;
+  background: rgba(0,0,0,.34);
+  border: 1px solid rgba(255,255,255,.13);
+  font-family: Consolas, Monaco, monospace;
+  font-size: clamp(11px, 2.9vw, 13px);
+  line-height: 1.4;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.progress-wrap {
+  margin-top: 14px;
+  height: 11px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.13);
+  overflow: hidden;
+}
+
+.progress {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--blue), var(--yellow), var(--red));
+  transition: width .22s ease;
+}
+
+.counter {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(255,255,255,.72);
+}
+
+.requirements {
+  margin-top: 16px;
+  max-height: 190px;
+  overflow-y: auto;
+  padding: 12px;
+  border-radius: 18px;
+  background: rgba(0,0,0,.23);
+  border: 1px solid rgba(255,255,255,.12);
+  font-size: 12px;
+  text-align: left;
+}
+
+.req {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  animation: reqIn .22s ease;
+}
+
+.req:last-child {
+  border-bottom: none;
+}
+
+.req-icon {
+  color: var(--red);
+  font-weight: 900;
+}
+
+@keyframes reqIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.shake {
+  animation: shake .22s 2;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(5px); }
+  50% { transform: translateX(-5px); }
+  75% { transform: translateX(3px); }
+  100% { transform: translateX(0); }
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.76);
+  z-index: 50;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-card {
+  width: min(92vw, 440px);
+  background: #fff;
+  color: #130f40;
+  border-radius: 26px;
+  padding: 26px;
+  text-align: center;
+  box-shadow: 0 24px 70px rgba(0,0,0,.5);
+  animation: pop .22s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(.75); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-card h2 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
+
+.modal-card p {
+  white-space: pre-line;
+  line-height: 1.45;
+}
+
+.modal-card button {
+  margin-top: 14px;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--red), var(--purple));
+  color: white;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.toast-stack {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: min(92vw, 380px);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  background: rgba(8,8,18,.94);
+  border: 1px solid rgba(255,255,255,.16);
+  border-left: 5px solid var(--red);
+  border-radius: 14px;
+  padding: 11px 13px;
+  color: white;
+  font-size: 12px;
+  font-family: Consolas, Monaco, monospace;
+  box-shadow: 0 12px 35px rgba(0,0,0,.45);
+  white-space: pre-line;
+  animation: toastIn .25s ease, toastOut .35s ease 2.6s forwards;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastOut {
+  to { opacity: 0; transform: translateX(28px); }
+}
+
+.server-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: none;
+  background: #0078d7;
+  color: white;
+  padding: min(8vw, 70px);
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.server-screen.active {
+  display: block;
+}
+
+.sad {
+  font-size: clamp(72px, 15vw, 150px);
+  line-height: 1;
+  margin-bottom: 22px;
+}
+
+.server-title {
+  font-size: clamp(23px, 5vw, 36px);
+  line-height: 1.28;
+  max-width: 850px;
+}
+
+.server-small {
+  margin-top: 26px;
+  font-size: clamp(14px, 2.6vw, 18px);
+  line-height: 1.45;
+}
+
+@media (max-width: 520px) {
+  body {
+    padding: 8px;
+    align-items: flex-start;
+  }
+
+  .card {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .toast-stack {
+    left: 8px;
+    right: 8px;
+    width: auto;
+  }
+
+  .requirements {
+    max-height: 160px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="toast-stack" id="toastStack"></div>  <main class="app">
+    <section class="card" id="card">
+      <div class="badge">🏆 Acceso exclusivo</div>
+      <h1>El mejor juego <span class="highlight">del mundo!!!</span></h1>
+      <p class="subtitle">Solo regístrate para acceder.</p><form id="form">
+    <div class="field">
+      <label for="name">Ingresa tu nombre</label>
+      <input id="name" autocomplete="off" placeholder="Tu nombre" />
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="off" placeholder="Password" />
+    </div>
+
+    <button class="btn" type="submit">Registrarme</button>
+  </form>
+
+  <div class="status" id="status">SYSTEM_READY
+
+Esperando registro...</div>
+
+<div class="progress-wrap">
+    <div class="progress" id="progress"></div>
+  </div>
+
+  <div class="counter">
+    <span>Validación de seguridad</span>
+    <span id="count">0 / 100</span>
+  </div>
+
+  <div class="requirements" id="requirements">
+    <div class="req"><span class="req-icon">•</span><span>Sin requisitos detectados.</span></div>
+  </div>
+</section>
+
+  </main>  <div class="modal" id="modal">
+    <div class="modal-card">
+      <h2 id="modalTitle">Error</h2>
+      <p id="modalText">Error desconocido.</p>
+      <button onclick="closeModal()">Aceptar</button>
+    </div>
+  </div>  <div class="server-screen" id="serverScreen">
+    <div class="sad">:(</div>
+    <div class="server-title">El servidor está ocupado y necesita reiniciarse.</div>
+    <div class="server-small" id="serverText">
+      Recopilando información del error... 0% completado<br><br>
+      Código de detención: SERVER_BUSY_LOOP
+    </div>
+  </div>  <script>
+    const form = document.getElementById('form');
+    const nameInput = document.getElementById('name');
+    const passwordInput = document.getElementById('password');
+    const statusBox = document.getElementById('status');
+    const requirementsBox = document.getElementById('requirements');
+    const progress = document.getElementById('progress');
+    const count = document.getElementById('count');
+    const card = document.getElementById('card');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalText = document.getElementById('modalText');
+    const toastStack = document.getElementById('toastStack');
+    const serverScreen = document.getElementById('serverScreen');
+    const serverText = document.getElementById('serverText');
+
+    let currentRule = 0;
+    let activeRules = [];
+
+    const rules = [
+      'Debe contener al menos una letra mayúscula.',
+      'Debe contener al menos una letra minúscula.',
+      'Debe contener al menos un número.',
+      'Debe contener al menos un carácter especial.',
+      'Debe tener mínimo 8 caracteres.',
+      'Debe tener máximo 7 caracteres.',
+      'Debe contener la letra Ñ.',
+      'Debe contener un emoji.',
+      'Debe contener un número romano.',
+      'Debe contener un jeroglífico egipcio.',
+      'Debe contener un sonido escrito, por ejemplo: “miau”.',
+      'Debe contener la palabra “gato”.',
+      'No debe contener la palabra “gato”.',
+      'Debe iniciar con una vocal.',
+      'Debe terminar con una consonante.',
+      'Debe contener exactamente 3 letras A.',
+      'Debe contener cero letras A.',
+      'Debe incluir el año actual.',
+      'Debe incluir un año bisiesto.',
+      'Debe incluir la raíz cuadrada de 144.',
+      'Debe incluir un número primo mayor a 50.',
+      'Debe incluir un número par y uno impar.',
+      'Debe tener una suma total de dígitos igual a 17.',
+      'Debe contener una palabra en inglés.',
+      'Debe contener una palabra en japonés.',
+      'Debe contener una palabra en lenguaje alienígena.',
+      'Debe incluir una coordenada GPS.',
+      'Debe incluir una contraseña anterior que nunca existió.',
+      'Debe incluir un carácter invisible.',
+      'Debe incluir un espacio, pero no puede tener espacios.',
+      'Debe contener dos signos de admiración.',
+      'Debe contener un signo de pregunta al revés.',
+      'Debe contener una fecha válida.',
+      'Debe contener una fecha que todavía no exista.',
+      'Debe contener el nombre del servidor.',
+      'Debe contener la IP 127.0.0.1.',
+      'Debe contener “admin”, pero no puede parecer administrador.',
+      'Debe contener una palabra con acento.',
+      'Debe contener una palabra sin vocales.',
+      'Debe contener una vocal repetida 5 veces.',
+      'Debe contener una letra griega.',
+      'Debe contener una letra cirílica.',
+      'Debe contener una runa vikinga.',
+      'Debe contener un símbolo zodiacal.',
+      'Debe contener una nota musical.',
+      'Debe contener una fórmula matemática.',
+      'Debe contener una ecuación sin resolver.',
+      'Debe contener el resultado de 7 x 8.',
+      'Debe contener una fracción.',
+      'Debe contener un porcentaje.',
+      'Debe contener un código postal.',
+      'Debe contener un RFC imaginario.',
+      'Debe contener un CURP de fantasía.',
+      'Debe contener una placa de auto.',
+      'Debe contener un color hexadecimal.',
+      'Debe contener # pero no puede contener hashtags.',
+      'Debe contener @ pero no debe parecer correo.',
+      'Debe contener .com pero no puede ser un dominio.',
+      'Debe contener una extensión .dll.',
+      'Debe contener una extensión .apk.',
+      'Debe contener una extensión .exe.',
+      'Debe contener “gato.apk” actualizado.',
+      'Debe contener “password_final_v2”.',
+      'Debe contener “no_soy_robot”.',
+      'Debe contener “soy_un_robot”.',
+      'Debe contener una declaración jurada.',
+      'Debe contener una promesa de no olvidar la contraseña.',
+      'Debe contener un chiste malo.',
+      'Debe contener una rima.',
+      'Debe contener una palabra palíndroma.',
+      'Debe contener una palabra que empiece y termine igual.',
+      'Debe contener una letra mayúscula después de un número.',
+      'Debe contener un número antes de una minúscula.',
+      'Debe contener exactamente 13 caracteres.',
+      'Debe contener más de 30 caracteres.',
+      'Debe contener menos de 5 caracteres.',
+      'Debe contener una contraseña fuerte, pero no demasiado fuerte.',
+      'Debe tener nivel de seguridad “medio alto bajo”.',
+      'Debe incluir una firma digital.',
+      'Debe incluir un certificado SSL emocional.',
+      'Debe incluir una copia de respaldo.',
+      'Debe incluir un archivo adjunto inexistente.',
+      'Debe coincidir con el captcha invisible.',
+      'Debe pasar validación cuántica.',
+      'Debe ser aprobada por el comité de contraseñas.',
+      'Debe contener un número que le guste a la CPU.',
+      'Debe contener una palabra que la CPU no odie.',
+      'Debe contener un símbolo que no esté en tu teclado.',
+      'Debe contener una letra de otro planeta.',
+      'Debe contener una contraseña secundaria dentro de la contraseña.',
+      'Debe contener mínimo una mentira piadosa.',
+      'Debe contener una disculpa al sistema.',
+      'Debe contener una imagen, pero en texto.',
+      'Debe contener un audio, pero escrito.',
+      'Debe tener aprobación de recursos humanos.',
+      'Debe incluir una orden de compra.',
+      'Debe tener firma del supervisor.',
+      'Debe contener la palabra exacta que estoy pensando.',
+      'Debe contener todo lo anterior sin contradecir nada.',
+      'Debe ser perfecta, pero no tanto.'
+    ];
+
+    const systemMessages = [
+      'VALIDATION_FAILED\nPassword rechazado por política de seguridad.',
+      'ACCESS_DENIED\nEl registro no pudo completarse.',
+      'SECURITY_CHECK_FAILED\nSe encontró un nuevo requisito obligatorio.',
+      'PASSWORD_POLICY_UPDATED\nLa política cambió durante el registro.',
+      'APP_WARNING\nLa contraseña casi funciona, pero todavía no.',
+      'CPU_VALIDATION\nAnalizando intento del usuario...',
+      'FORM_ERROR\nEl servidor rechazó los datos enviados.',
+      'SYSTEM_NOTICE\nSe aplicó una nueva regla de seguridad.'
+    ];
+
+    const toastMessages = [
+      'Validación fallida.',
+      'Nueva política detectada.',
+      'Actualizando seguridad...',
+      'Contraseña no compatible.',
+      'Falta requisito obligatorio.',
+      'Servidor revisando...',
+      'Archivo password.dll no encontrado.',
+      'gato.apk requiere actualización.',
+      'Versión no compatible.',
+      'Validación cuántica pendiente.'
+    ];
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      attemptRegister();
+    });
+
+    function attemptRegister() {
+      if (!nameInput.value.trim()) {
+        showModal('NAME_REQUIRED', 'Ingresa tu nombre para continuar.');
+        return;
+      }
+
+      if (!passwordInput.value.trim()) {
+        showModal('PASSWORD_REQUIRED', 'Ingresa un password para continuar.');
+        return;
+      }
+
+      if (currentRule >= 100) {
+        serverBusyReset();
+        return;
+      }
+
+      const nextRule = rules[currentRule];
+      activeRules.unshift(nextRule);
+      currentRule++;
+
+      updateUI(nextRule);
+      fakeCpuTyping();
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+      toast(random(toastMessages));
+
+      if (currentRule >= 100) {
+        setTimeout(serverBusyReset, 900);
+      }
+    }
+
+    function updateUI(rule) {
+      statusBox.textContent = `${random(systemMessages)}\n\nNuevo requisito detectado:\n- ${rule}`;
+      progress.style.width = `${currentRule}%`;
+      count.textContent = `${currentRule} / 100`;
+      renderRequirements();
+    }
+
+    function renderRequirements() {
+      requirementsBox.innerHTML = '';
+      activeRules.slice(0, 100).forEach((rule, index) => {
+        const item = document.createElement('div');
+        item.className = 'req';
+        item.innerHTML = `<span class="req-icon">✖</span><span>${100 - index}. ${rule}</span>`;
+        requirementsBox.appendChild(item);
+      });
+    }
+
+    function fakeCpuTyping() {
+      const original = statusBox.textContent;
+      statusBox.textContent = 'CPU_VALIDATION\nAnalizando contraseña...';
+      setTimeout(() => {
+        statusBox.textContent = original;
+      }, 420);
+    }
+
+    function serverBusyReset() {
+      serverScreen.classList.add('active');
+      let pct = 0;
+      const loader = setInterval(() => {
+        pct += Math.floor(Math.random() * 12) + 5;
+        if (pct >= 100) {
+          pct = 100;
+          clearInterval(loader);
+          setTimeout(() => {
+            serverScreen.classList.remove('active');
+            resetGame();
+          }, 850);
+        }
+
+        serverText.innerHTML = `Recopilando información del error... ${pct}% completado<br><br>Código de detención: SERVER_BUSY_LOOP<br>Archivo afectado: registro_usuario.dll`;
+      }, 220);
+    }
+
+    function resetGame() {
+      currentRule = 0;
+      activeRules = [];
+      progress.style.width = '0%';
+      count.textContent = '0 / 100';
+      passwordInput.value = '';
+      statusBox.textContent = 'SYSTEM_READY\nEsperando registro...';
+      requirementsBox.innerHTML = '<div class="req"><span class="req-icon">•</span><span>Sin requisitos detectados.</span></div>';
+      toast('Servidor reiniciado. Intenta registrarte otra vez.');
+    }
+
+    function showModal(title, text) {
+      modalTitle.textContent = title;
+      modalText.textContent = text;
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+    }
+
+    function toast(text) {
+      const item = document.createElement('div');
+      item.className = 'toast';
+      item.textContent = text;
+      toastStack.appendChild(item);
+      setTimeout(() => item.remove(), 3100);
+    }
+
+    function random(list) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
+  </script></body>
+</html>
