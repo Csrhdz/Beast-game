@@ -501,13 +501,20 @@ textarea {
 
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.15);
-  background: rgba(0,0,0,0.8); /* negro pero con transparencia */
+  border: 1px solid rgba(255,255,255,.18); /* 👈 importante */
+  background: rgba(0,0,0,0.8);
   color: white;
   font-family: inherit;
   font-size: 16px;
+  outline: none;
+  transition: .16s ease;
+}
 
-  box-shadow: inset 0 0 10px rgba(0,0,0,.8);
+textarea:focus {
+  border-color: #e50914;
+  box-shadow:
+    0 0 0 4px rgba(229,9,20,.16),
+    0 0 22px rgba(229,9,20,.18);
 }
 
     
