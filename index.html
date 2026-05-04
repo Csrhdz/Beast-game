@@ -799,7 +799,7 @@ const conditions = [
   { message: 'El password debe tener una pregunta.', validate: p => p.includes('?') || p.includes('¿') },
   { message: 'El password debe tener admiración.', validate: p => p.includes('!') || p.includes('¡') },
 
-  { message: 'El password debe tener un color.', validate: p => /rojo|azul|verde|🔴|🔵|🟢/i.test(p) },
+  { message: 'El password debe tener un color primario.', validate: p => /rojo|azul|verde|🔴|🔵|🟢/i.test(p) },
   { message: 'El password debe tener algo imposible.', validate: p => /imposible/i.test(p) },
 
   { message: 'El password debe tener más de 20 caracteres.', validate: p => p.length > 20 },
@@ -813,39 +813,79 @@ const conditions = [
   { message: 'El password debe tener la palabra acceso.', validate: p => /acceso/i.test(p) },
   { message: 'El password debe terminar con número.', validate: p => /\d$/.test(p) }
 ];
+const systemMessages = {
+  soft: [
+    'No se pudo completar el registro.',
+    'El sistema necesita un dato adicional.',
+    'La información todavía no es suficiente.',
+    'Registro detenido temporalmente.',
+    'Eso no era tan complicado...',
+    'Intenta leer antes de escribir.',
+    'Vas bien… pero no tanto.',
+    'Casi parece que sabes lo que haces.',
+    'Eso no es lo que pedí.',
+    '¿Eso fue en serio tu intento?'
+  ],
 
-    const systemMessages = {
-      soft: [
-        'No se pudo completar el registro.',
-        'El sistema necesita un dato adicional.',
-        'La información todavía no es suficiente.',
-        'Registro detenido temporalmente.'
-      ],
-      medium: [
-        'El sistema detectó una inconsistencia.',
-        'Algo no coincide con el patrón esperado.',
-        'Acceso retenido.',
-        'Tu contraseña todavía no cumple con el protocolo.'
-      ],
-      hard: [
-        'Actividad inusual detectada.',
-        'No intentes saltarte los requisitos.',
-        'El registro no confía en esta combinación.',
-        'Tu patrón de escritura fue marcado como sospechoso.'
-      ],
-      nightmare: [
-        'Te estamos observando.',
-        'Cada cambio quedó registrado.',
-        'La Bestia no acepta errores.',
-        'El sistema ya aprendió tu forma de escribir.'
-      ],
-      final: [
-        'Eso estuvo demasiado cerca.',
-        'La Bestia está despierta.',
-        'No borres nada ahora.',
-        'El registro sabe lo que intentaste hacer.'
-      ]
-    };
+  medium: [
+    'El sistema detectó una inconsistencia.',
+    'Algo no coincide con el patrón esperado.',
+    'Acceso retenido.',
+    'Tu contraseña todavía no cumple con el protocolo.',
+    'Estás ignorando instrucciones básicas.',
+    'Cada error queda registrado.',
+    'No improvises… sigue las reglas.',
+    'Eso estuvo cerca… pero no.',
+    'Tu lógica es cuestionable.',
+    'Vuelve a intentarlo sin adivinar.'
+  ],
+
+  hard: [
+    'Actividad inusual detectada.',
+    'No intentes saltarte los requisitos.',
+    'El registro no confía en esta combinación.',
+    'Tu patrón de escritura fue marcado como sospechoso.',
+    'Estás repitiendo errores.',
+    'El sistema empieza a perder la paciencia.',
+    'Eso ya lo intentaste… y fallaste.',
+    'No avances si no entiendes.',
+    'Estás forzando algo que no funciona.',
+    'Esto ya no es un juego sencillo.'
+  ],
+
+  nightmare: [
+    'Te estamos observando.',
+    'Cada cambio quedó registrado.',
+    'La Bestia no acepta errores.',
+    'El sistema ya aprendió tu forma de escribir.',
+    'No borres nada ahora.',
+    'Eso que acabas de hacer… fue mala idea.',
+    'No intentes engañar al sistema.',
+    'Sabemos lo que intentas.',
+    'No te precipites.',
+    'Tu comportamiento es predecible.',
+    'La Bestia está prestando atención.',
+    'Ya no puedes cometer errores tan fácilmente.'
+  ],
+
+  final: [
+    'Eso estuvo demasiado cerca.',
+    'La Bestia está despierta.',
+    'No borres nada ahora.',
+    'El registro sabe lo que intentaste hacer.',
+    'No falles ahora.',
+    'No después de todo esto.',
+    'Un error más… y vuelves al inicio.',
+    'Respira… y escribe bien.',
+    'No arruines todo.',
+    'Este es el punto donde la mayoría falla.',
+    'Ya no hay margen de error.',
+    'El sistema está evaluando cada carácter.',
+    'No escribas por impulso.',
+    'Esto define si continúas… o no.'
+  ]
+};
+    
 
     btnRegister.addEventListener('click', () => {
   startAudio();
@@ -933,34 +973,30 @@ function playAlert() {
       setTimeout(showFinalValidationPopup, 700);
     }
 
-    function getBrutalMessage(index, name) {
+   function getBrutalMessage(index, name) {
   const user = name || 'humano';
 
-  const mensajes = [
-    `${user}, empezamos fuerte y ya fallaste.`,
-    `${user}, eso no cuenta, pero buen intento.`,
-    `${user}, el sistema esperaba más de ti.`,
-    `${user}, no era tan difícil.`,
-    `${user}, la Bestia acaba de suspirar.`,
-    `${user}, casi... pero no.`,
-    `${user}, eso estuvo creativo, pero incorrecto.`,
-    `${user}, vuelve a leer, no muerde. Bueno... todavía.`,
-    `${user}, el password no se va a completar solo.`,
-    `${user}, la Bestia está perdiendo la paciencia.`,
-    `${user}, eso fue valiente, no correcto.`,
-    `${user}, intenta otra vez antes de que el sistema se arrepienta.`
-  ];
+  let pool;
 
-  if (index > 25) {
-    mensajes.push(
-      `${user}, ya llegaste lejos; no lo arruines ahora.`,
-      `${user}, borrar cosas a estas alturas sería una tragedia.`,
-      `${user}, la Bestia ya memorizó tus errores.`,
-      `${user}, el sistema te está juzgando en silencio.`
-    );
+  if (index < 10) pool = systemMessages.soft;
+  else if (index < 25) pool = systemMessages.medium;
+  else if (index < 40) pool = systemMessages.hard;
+  else if (index < 48) pool = systemMessages.nightmare;
+  else pool = systemMessages.final;
+
+  let msg = pool[Math.floor(Math.random() * pool.length)];
+
+  // 😈 empieza a hablarle directo
+  if (index > 15 && Math.random() < 0.6) {
+    msg = `${user}, ${msg.charAt(0).toLowerCase()}${msg.slice(1)}`;
   }
 
-  return mensajes[Math.floor(Math.random() * mensajes.length)];
+  // 💀 más presión al final
+  if (index > 40 && Math.random() < 0.4) {
+    msg += '\nNo falles ahora.';
+  }
+
+  return msg;
 }
 
     function fail(message, index) {
