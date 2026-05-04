@@ -582,14 +582,9 @@
 
     const conditions = [
       {
-        message: 'El password debe tener mínimo 6 letras.',
-        validate: ({ pasaword }) => name.replace(/\s/g, '').length >= 6,
-        done: 'Nombre con mínimo 6 letras.'
-      },
-      {
-        message: 'El password debe tener mínimo 8 caracteres.',
-        validate: ({ password }) => password.length >= 8,
-        done: 'Password con mínimo 8 caracteres.'
+        message: 'El password debe tener mínimo 6 caracteres.',
+        validate: ({ password }) => password.length >= 6,
+        done: 'Password con mínimo 6 caracteres.'
       },
       {
         message: 'Agrega una letra mayúscula.',
