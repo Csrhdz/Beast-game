@@ -673,6 +673,7 @@
         </div>
 
         <button class="btn" type="button" id="btnRegister">Registrarme</button>
+        
       </form>
 
       <div class="hint warn" id="hint">Ingresa tu nombre y contraseña para iniciar el registro.</div>
@@ -698,7 +699,7 @@
       Código de detención: SERVER_NOT_AVAILABLE
     </div>
   </section>
-  <audio id="musicBg" src="musica.mp3" preload="auto" loop></audio>
+  <audio id="musicBg" src="musica.mp3" preload="auto" loop playsinline></audio>
 <audio id="soundThunder" src="trueno.mp3" preload="auto"></audio>
 <audio id="soundAlert" src="alerta.mp3" preload="auto"></audio>
 
@@ -752,6 +753,11 @@
     const restartBtn = document.getElementById('restartBtn');
 
 let audioStarted = false;
+    document.addEventListener('click', () => {
+  if (!audioStarted) {
+    startAudio();
+  }
+}, { once: true });
 
 password.addEventListener("input", () => {
   password.style.height = "auto";
@@ -887,10 +893,7 @@ const systemMessages = {
 };
     
 
-    btnRegister.addEventListener('click', () => {
-  startAudio();
-  validatePassword();
-});
+btnRegister.addEventListener('click', validatePassword);
 
     passwordInput.addEventListener('keydown', event => {
       if (event.key === 'Enter') {
@@ -899,16 +902,19 @@ const systemMessages = {
       }
     });
 
-    function startAudio() {
-  if (audioStarted) return;
-
-  audioStarted = true;
-
-  musicBg.volume = 0.22;
+function startAudio() {
+  musicBg.volume = 0.25;
   soundThunder.volume = 0.75;
   soundAlert.volume = 0.55;
 
-  musicBg.play().catch(() => {});
+  musicBg.play()
+    .then(() => {
+      audioStarted = true;
+      console.log('Música iniciada');
+    })
+    .catch(error => {
+      console.log('El navegador bloqueó la música:', error);
+    });
 }
 
 function playThunder() {
