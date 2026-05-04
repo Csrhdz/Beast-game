@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>El Juego de la Bestia</title>
+
+  <!-- Vista previa para Facebook / WhatsApp -->
+  <meta property="og:title" content="El Juego de la Bestia">
+  <meta property="og:description" content="Regístrate para acceder al reto. ¿Podrás completar el registro?">
+  <meta property="og:image" content="https://csrhdz.github.io/cat-game/preview.jpg">
+  <meta property="og:url" content="https://csrhdz.github.io/cat-game/">
+  <meta property="og:type" content="website">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --red: #e50914;
+      --dark-red: #760000;
+      --blue: #00a8ff;
+      --pink: #ff006e;
+      --gold: #ffd166;
+      --card: rgba(8, 8, 18, .72);
+      --line: rgba(255,255,255,.16);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,.78);
+      --success: #27e08a;
+      --warning: #ffd166;
+    }
+
+    html {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+      background:
+        linear-gradient(rgba(0,0,0,.28), rgba(0,0,0,.78)),
+        url('fondo.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255,0,0,.20), transparent 24%),
+        radial-gradient(circle at 15% 75%, rgba(0,168,255,.23), transparent 32%),
+        radial-gradient(circle at 85% 75%, rgba(255,0,110,.20), transparent 34%),
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255,255,255,.025),
+          rgba(255,255,255,.025) 1px,
+          transparent 1px,
+          transparent 5px
+        );
+      mix-blend-mode: screen;
+    }
+
+    .fire {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: -10%;
+      height: 42%;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 100%, rgba(255, 40, 0, .45), transparent 35%),
+        radial-gradient(circle at 50% 100%, rgba(255, 120, 0, .35), transparent 38%),
+        radial-gradient(circle at 80% 100%, rgba(255, 0, 0, .40), transparent 35%);
+      filter: blur(14px);
+      opacity: .68;
+      animation: fireMove 1.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes fireMove {
+      from { transform: translateY(10px) scaleX(1); opacity: .50; }
+      to { transform: translateY(-10px) scaleX(1.05); opacity: .78; }
+    }
+
+    .lightning {
+      position: fixed;
+      inset: 0;
+      z-index: 6;
+      pointer-events: none;
+      background: white;
+      opacity: 0;
+    }
+
+    .lightning.active {
+      animation: lightningFlash .36s ease;
+    }
+
+    @keyframes lightningFlash {
+      0% { opacity: 0; }
+      8% { opacity: .82; }
+      18% { opacity: 0; }
+      28% { opacity: .55; }
+      100% { opacity: 0; }
+    }
+
+    .eyes-layer {
+      position: fixed;
+      top: 13svh;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: clamp(58px, 15vw, 130px);
+      z-index: 2;
+      pointer-events: none;
+      opacity: .82;
+    }
+
+    .eye {
+      width: clamp(14px, 3.4vw, 28px);
+      height: clamp(14px, 3.4vw, 28px);
+      border-radius: 50%;
+      background: #ff0000;
+      box-shadow:
+        0 0 12px #ff0000,
+        0 0 28px #ff0000,
+        0 0 50px rgba(255,0,0,.8);
+      animation: blink 4.6s infinite;
+    }
+
+    .eye:nth-child(2) {
+      animation-delay: .08s;
+    }
+
+    @keyframes blink {
+      0%, 88%, 100% { transform: scaleY(1); opacity: 1; }
+      92% { transform: scaleY(.08); opacity: .55; }
+      94% { transform: scaleY(1); opacity: 1; }
+    }
+
+    .layout {
+      position: relative;
+      z-index: 3;
+      width: min(100%, 560px);
+      display: grid;
+      gap: 14px;
+      margin-top: clamp(80px, 18svh, 130px);
+    }
+
+    .title {
+      text-align: center;
+      text-shadow: 0 8px 35px rgba(0,0,0,.8);
+    }
+
+    .title .small {
+      display: block;
+      font-size: clamp(20px, 6vw, 34px);
+      font-weight: 950;
+      letter-spacing: 1.5px;
+      color: #e8e8e8;
+    }
+
+    .title .beast {
+      display: inline-block;
+      font-size: clamp(46px, 14vw, 86px);
+      line-height: .9;
+      font-weight: 1000;
+      letter-spacing: -2px;
+      color: #e50914;
+      text-transform: uppercase;
+      text-shadow:
+        0 0 10px rgba(255,0,0,.9),
+        0 0 28px rgba(255,0,0,.65),
+        0 0 56px rgba(118,0,0,.55);
+      position: relative;
+      animation: beastPulse 1.8s ease-in-out infinite alternate;
+    }
+
+    .title .beast::after {
+      content: '';
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      bottom: -10px;
+      height: 16px;
+      background:
+        radial-gradient(circle at 10% 0, rgba(255,0,0,.8), transparent 45%),
+        radial-gradient(circle at 45% 0, rgba(255,0,0,.7), transparent 45%),
+        radial-gradient(circle at 75% 0, rgba(255,0,0,.8), transparent 45%);
+      filter: blur(2px);
+      opacity: .78;
+      animation: bloodDrop 1.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes beastPulse {
+      from { transform: scale(1); filter: brightness(1); }
+      to { transform: scale(1.035); filter: brightness(1.18); }
+    }
+
+    @keyframes bloodDrop {
+      from { transform: translateY(0) scaleY(.65); opacity: .45; }
+      to { transform: translateY(7px) scaleY(1); opacity: .9; }
+    }
+
+    .card {
+      width: 100%;
+      padding: clamp(18px, 4vw, 28px);
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(7,7,18,.82), rgba(0,0,0,.72));
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow:
+        0 28px 80px rgba(0,0,0,.68),
+        inset 0 0 0 1px rgba(255,255,255,.06);
+      backdrop-filter: blur(14px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(0,168,255,.7), rgba(229,9,20,.85), rgba(255,0,110,.7));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .card-header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.14);
+      color: #dff9fb;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .card h1 {
+      margin: 0;
+      font-size: clamp(24px, 7vw, 38px);
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .card p {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: clamp(13px, 3.4vw, 15px);
+      line-height: 1.4;
+    }
+
+    .field {
+      margin-bottom: 13px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      font-weight: 900;
+      font-size: 13px;
+      margin-bottom: 7px;
+      color: rgba(255,255,255,.88);
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.42);
+      color: white;
+      border-radius: 16px;
+      padding: 14px 15px;
+      font-size: 16px;
+      outline: none;
+      transition: .16s ease;
+    }
+
+    input::placeholder {
+      color: rgba(255,255,255,.42);
+    }
+
+    input:focus {
+      border-color: var(--red);
+      box-shadow:
+        0 0 0 4px rgba(229,9,20,.16),
+        0 0 22px rgba(229,9,20,.18);
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      padding: 15px 18px;
+      border-radius: 18px;
+      cursor: pointer;
+      color: white;
+      font-size: 16px;
+      font-weight: 1000;
+      background: linear-gradient(135deg, #003cff, #e50914, #ff006e);
+      box-shadow:
+        0 14px 30px rgba(0,0,0,.38),
+        0 0 22px rgba(229,9,20,.25);
+      transition: transform .15s ease, filter .15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+
+    .btn:active {
+      transform: scale(.98);
+    }
+
+    .hint {
+      margin-top: 14px;
+      padding: 12px 13px;
+      min-height: 64px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.36);
+      border: 1px solid rgba(255,255,255,.13);
+      font-family: Consolas, Monaco, monospace;
+      font-size: clamp(11px, 2.9vw, 13px);
+      line-height: 1.42;
+      color: rgba(255,255,255,.86);
+      white-space: pre-line;
+    }
+
+    .hint.ok {
+      border-color: rgba(39,224,138,.55);
+      color: #d9ffe9;
+      box-shadow: 0 0 18px rgba(39,224,138,.12);
+    }
+
+    .hint.warn {
+      border-color: rgba(255,209,102,.55);
+      color: #fff3cf;
+      box-shadow: 0 0 18px rgba(255,209,102,.12);
+    }
+
+    .progress-wrap {
+      height: 10px;
+      margin-top: 13px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--gold), var(--red));
+      transition: width .25s ease;
+    }
+
+    .counter {
+      margin-top: 9px;
+      display: flex;
+      justify-content: space-between;
+      color: rgba(255,255,255,.68);
+      font-size: 12px;
+      gap: 10px;
+    }
+
+    .completed-list {
+      margin-top: 14px;
+      max-height: 130px;
+      overflow-y: auto;
+      border-radius: 16px;
+      padding: 10px;
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.10);
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .completed-item {
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      color: rgba(255,255,255,.78);
+      animation: itemIn .2s ease;
+    }
+
+    .completed-item:last-child {
+      border-bottom: none;
+    }
+
+    @keyframes itemIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .shake {
+      animation: shake .22s 2;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(5px); }
+      50% { transform: translateX(-5px); }
+      75% { transform: translateX(3px); }
+      100% { transform: translateX(0); }
+    }
+
+    .server-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      padding: min(8vw, 70px);
+      background: #0078d7;
+      color: white;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    .server-screen.active {
+      display: block;
+    }
+
+    .sad {
+      font-size: clamp(70px, 15vw, 150px);
+      line-height: 1;
+      margin-bottom: 24px;
+    }
+
+    .server-title {
+      font-size: clamp(23px, 5vw, 36px);
+      max-width: 850px;
+      line-height: 1.28;
+    }
+
+    .server-small {
+      margin-top: 28px;
+      font-size: clamp(14px, 2.6vw, 18px);
+      line-height: 1.45;
+      max-width: 850px;
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 8px;
+        align-items: flex-start;
+        background-attachment: scroll;
+      }
+
+      .layout {
+        margin-top: 92px;
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 24px;
+      }
+
+      .completed-list {
+        max-height: 110px;
+      }
+    }
+
+    @media (max-height: 760px) and (min-width: 600px) {
+      body {
+        align-items: flex-start;
+      }
+
+      .layout {
+        margin-top: 70px;
+      }
+
+      .title .small {
+        font-size: 24px;
+      }
+
+      .title .beast {
+        font-size: 56px;
+      }
+
+      .completed-list {
+        max-height: 90px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="fire"></div>
+  <div class="lightning" id="lightning"></div>
+
+  <div class="eyes-layer">
+    <div class="eye"></div>
+    <div class="eye"></div>
+  </div>
+
+  <main class="layout">
+    <section class="title">
+      <span class="small">EL JUEGO DE LA</span>
+      <span class="beast">BESTIA</span>
+    </section>
+
+    <section class="card" id="card">
+      <div class="card-header">
+        <div class="badge">🔐 Registro de acceso</div>
+        <h1>Registro</h1>
+        <p>Completa tu registro para entrar al juego.</p>
+      </div>
+
+      <form id="form" novalidate>
+        <div class="field">
+          <label for="name">Nombre</label>
+          <input id="name" autocomplete="off" placeholder="Ingresa tu nombre">
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="off" placeholder="Ingresa tu password">
+        </div>
+
+        <button class="btn" type="submit">Registrarme</button>
+      </form>
+
+      <div class="hint warn" id="hint">Ingresa tu nombre y contraseña para iniciar el registro.</div>
+
+      <div class="progress-wrap">
+        <div class="progress" id="progress"></div>
+      </div>
+
+      <div class="counter">
+        <span>Validación</span>
+        <span id="counter">0 / 50</span>
+      </div>
+
+      <div class="completed-list" id="completedList">
+        <div class="completed-item">Sin validaciones completadas.</div>
+      </div>
+    </section>
+  </main>
+
+  <section class="server-screen" id="serverScreen">
+    <div class="sad">:(</div>
+    <div class="server-title">
+      El servidor no está disponible.<br>
+      Intente más tarde su registro.
+    </div>
+    <div class="server-small" id="serverText">
+      Recopilando información del error... 0% completado<br><br>
+      Código de detención: SERVER_NOT_AVAILABLE
+    </div>
+  </section>
+
+  <script>
+    const form = document.getElementById('form');
+    const nameInput = document.getElementById('name');
+    const passwordInput = document.getElementById('password');
+    const hint = document.getElementById('hint');
+    const progress = document.getElementById('progress');
+    const counter = document.getElementById('counter');
+    const completedList = document.getElementById('completedList');
+    const card = document.getElementById('card');
+    const lightning = document.getElementById('lightning');
+    const serverScreen = document.getElementById('serverScreen');
+    const serverText = document.getElementById('serverText');
+
+    let currentCondition = 0;
+    let completed = [];
+
+    const conditions = [
+      {
+        message: 'El nombre debe tener mínimo 6 letras.',
+        validate: ({ name }) => name.replace(/\s/g, '').length >= 6,
+        done: 'Nombre con mínimo 6 letras.'
+      },
+      {
+        message: 'El password debe tener mínimo 8 caracteres.',
+        validate: ({ password }) => password.length >= 8,
+        done: 'Password con mínimo 8 caracteres.'
+      },
+      {
+        message: 'Agrega una letra mayúscula.',
+        validate: ({ password }) => /[A-ZÁÉÍÓÚÑ]/.test(password),
+        done: 'Incluye mayúscula.'
+      },
+      {
+        message: 'Agrega una letra minúscula.',
+        validate: ({ password }) => /[a-záéíóúñ]/.test(password),
+        done: 'Incluye minúscula.'
+      },
+      {
+        message: 'Agrega un número.',
+        validate: ({ password }) => /\d/.test(password),
+        done: 'Incluye número.'
+      },
+      {
+        message: 'Agrega un carácter especial como @, #, $, %, & o !.',
+        validate: ({ password }) => /[@#$%&!*_.\-]/.test(password),
+        done: 'Incluye carácter especial.'
+      },
+      {
+        message: 'El password debe iniciar con mayúscula.',
+        validate: ({ password }) => /^[A-ZÁÉÍÓÚÑ]/.test(password),
+        done: 'Inicia con mayúscula.'
+      },
+      {
+        message: 'El password debe terminar con número.',
+        validate: ({ password }) => /\d$/.test(password),
+        done: 'Termina con número.'
+      },
+      {
+        message: 'Agrega exactamente dos números.',
+        validate: ({ password }) => (password.match(/\d/g) || []).length === 2,
+        done: 'Contiene exactamente dos números.'
+      },
+      {
+        message: 'Agrega la letra Ñ.',
+        validate: ({ password }) => /ñ|Ñ/.test(password),
+        done: 'Incluye Ñ.'
+      },
+      {
+        message: 'Agrega un guion bajo "_".',
+        validate: ({ password }) => password.includes('_'),
+        done: 'Incluye guion bajo.'
+      },
+      {
+        message: 'Agrega la palabra bestia.',
+        validate: ({ password }) => /bestia/i.test(password),
+        done: 'Incluye la palabra bestia.'
+      },
+      {
+        message: 'Ahora elimina la palabra bestia.',
+        validate: ({ password }) => !/bestia/i.test(password),
+        done: 'Ya no contiene la palabra bestia.'
+      },
+      {
+        message: 'Agrega un emoji.',
+        validate: ({ password }) => /[\u{1F300}-\u{1FAFF}]/u.test(password),
+        done: 'Incluye emoji.'
+      },
+      {
+        message: 'Agrega un punto ".".',
+        validate: ({ password }) => password.includes('.'),
+        done: 'Incluye punto.'
+      },
+      {
+        message: 'Agrega una coma ",".',
+        validate: ({ password }) => password.includes(','),
+        done: 'Incluye coma.'
+      },
+      {
+        message: 'Agrega un signo de pregunta.',
+        validate: ({ password }) => password.includes('?') || password.includes('¿'),
+        done: 'Incluye signo de pregunta.'
+      },
+      {
+        message: 'Agrega un signo de admiración.',
+        validate: ({ password }) => password.includes('!') || password.includes('¡'),
+        done: 'Incluye signo de admiración.'
+      },
+      {
+        message: 'Agrega la palabra CPU.',
+        validate: ({ password }) => /CPU/.test(password),
+        done: 'Incluye CPU.'
+      },
+      {
+        message: 'Agrega la palabra dll.',
+        validate: ({ password }) => /dll/i.test(password),
+        done: 'Incluye dll.'
+      },
+      {
+        message: 'Agrega la palabra apk.',
+        validate: ({ password }) => /apk/i.test(password),
+        done: 'Incluye apk.'
+      },
+      {
+        message: 'Agrega el número 777.',
+        validate: ({ password }) => password.includes('777'),
+        done: 'Incluye 777.'
+      },
+      {
+        message: 'Agrega el número 666.',
+        validate: ({ password }) => password.includes('666'),
+        done: 'Incluye 666.'
+      },
+      {
+        message: 'El password debe tener más de 15 caracteres.',
+        validate: ({ password }) => password.length > 15,
+        done: 'Tiene más de 15 caracteres.'
+      },
+      {
+        message: 'El password debe tener menos de 40 caracteres.',
+        validate: ({ password }) => password.length < 40,
+        done: 'Tiene menos de 40 caracteres.'
+      },
+      {
+        message: 'Agrega una vocal con acento.',
+        validate: ({ password }) => /[áéíóúÁÉÍÓÚ]/.test(password),
+        done: 'Incluye vocal con acento.'
+      },
+      {
+        message: 'Agrega una palabra en inglés.',
+        validate: ({ password }) => /(game|play|beast|dark|fire|win)/i.test(password),
+        done: 'Incluye palabra en inglés.'
+      },
+      {
+        message: 'Agrega una palabra en español.',
+        validate: ({ password }) => /(juego|fuego|sombra|clave|bestia)/i.test(password),
+        done: 'Incluye palabra en español.'
+      },
+      {
+        message: 'Agrega un símbolo matemático.',
+        validate: ({ password }) => /[+\-*/=]/.test(password),
+        done: 'Incluye símbolo matemático.'
+      },
+      {
+        message: 'Agrega una diagonal "/".',
+        validate: ({ password }) => password.includes('/'),
+        done: 'Incluye diagonal.'
+      },
+      {
+        message: 'Agrega una diagonal invertida "\\\\".',
+        validate: ({ password }) => password.includes('\\'),
+        done: 'Incluye diagonal invertida.'
+      },
+      {
+        message: 'Agrega un paréntesis.',
+        validate: ({ password }) => /[()]/.test(password),
+        done: 'Incluye paréntesis.'
+      },
+      {
+        message: 'Agrega un corchete.',
+        validate: ({ password }) => /[\[\]]/.test(password),
+        done: 'Incluye corchete.'
+      },
+      {
+        message: 'Agrega una llave.',
+        validate: ({ password }) => /[{}]/.test(password),
+        done: 'Incluye llave.'
+      },
+      {
+        message: 'Agrega una letra griega como Ω, α o β.',
+        validate: ({ password }) => /[Ωαβ]/.test(password),
+        done: 'Incluye letra griega.'
+      },
+      {
+        message: 'Agrega un símbolo musical como ♪ o ♫.',
+        validate: ({ password }) => /[♪♫]/.test(password),
+        done: 'Incluye símbolo musical.'
+      },
+      {
+        message: 'Agrega un símbolo zodiacal como ♈ o ♌.',
+        validate: ({ password }) => /[♈♉♊♋♌♍♎♏♐♑♒♓]/.test(password),
+        done: 'Incluye símbolo zodiacal.'
+      },
+      {
+        message: 'Agrega un color hexadecimal, por ejemplo #FF0000.',
+        validate: ({ password }) => /#[0-9a-fA-F]{6}/.test(password),
+        done: 'Incluye color hexadecimal.'
+      },
+      {
+        message: 'Agrega una dirección IP 127.0.0.1.',
+        validate: ({ password }) => password.includes('127.0.0.1'),
+        done: 'Incluye IP local.'
+      },
+      {
+        message: 'Agrega una extensión .exe.',
+        validate: ({ password }) => /\.exe/i.test(password),
+        done: 'Incluye .exe.'
+      },
+      {
+        message: 'Agrega una extensión .sys.',
+        validate: ({ password }) => /\.sys/i.test(password),
+        done: 'Incluye .sys.'
+      },
+      {
+        message: 'Agrega una extensión .jpg.',
+        validate: ({ password }) => /\.jpg/i.test(password),
+        done: 'Incluye .jpg.'
+      },
+      {
+        message: 'Agrega la palabra registro.',
+        validate: ({ password }) => /registro/i.test(password),
+        done: 'Incluye registro.'
+      },
+      {
+        message: 'Agrega la palabra validado.',
+        validate: ({ password }) => /validado/i.test(password),
+        done: 'Incluye validado.'
+      },
+      {
+        message: 'Agrega la palabra acceso.',
+        validate: ({ password }) => /acceso/i.test(password),
+        done: 'Incluye acceso.'
+      },
+      {
+        message: 'Agrega la palabra final.',
+        validate: ({ password }) => /final/i.test(password),
+        done: 'Incluye final.'
+      },
+      {
+        message: 'Agrega la palabra temporal.',
+        validate: ({ password }) => /temporal/i.test(password),
+        done: 'Incluye temporal.'
+      },
+      {
+        message: 'Agrega la palabra seguro.',
+        validate: ({ password }) => /seguro/i.test(password),
+        done: 'Incluye seguro.'
+      },
+      {
+        message: 'Agrega la palabra sistema.',
+        validate: ({ password }) => /sistema/i.test(password),
+        done: 'Incluye sistema.'
+      },
+      {
+        message: 'Agrega la palabra perfecto.',
+        validate: ({ password }) => /perfecto/i.test(password),
+        done: 'Incluye perfecto.'
+      }
+    ];
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      validateStep();
+    });
+
+    passwordInput.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        validateStep();
+      }
+    });
+
+    function validateStep() {
+      const data = {
+        name: nameInput.value.trim(),
+        password: passwordInput.value
+      };
+
+      if (!data.name) {
+        fail('Ingresa tu nombre para continuar.');
+        return;
+      }
+
+      if (!data.password) {
+        fail('Ingresa tu password para continuar.');
+        return;
+      }
+
+      if (currentCondition >= conditions.length) {
+        showServerUnavailable();
+        return;
+      }
+
+      const condition = conditions[currentCondition];
+
+      if (!condition.validate(data)) {
+        fail(condition.message);
+        return;
+      }
+
+      completed.unshift(condition.done);
+      currentCondition++;
+      updateProgress();
+
+      if (currentCondition >= conditions.length) {
+        hint.className = 'hint ok';
+        hint.textContent = 'VALIDATION_COMPLETE\nProcesando registro...';
+        setTimeout(showServerUnavailable, 850);
+        return;
+      }
+
+      const nextCondition = conditions[currentCondition];
+      hint.className = 'hint warn';
+      hint.textContent = `Validación correcta.\nSiguiente requisito:\n${nextCondition.message}`;
+      renderCompleted();
+    }
+
+    function fail(message) {
+      hint.className = 'hint warn';
+      hint.textContent = `No se pudo completar el registro.\n${message}`;
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+      randomLightning();
+    }
+
+    function updateProgress() {
+      const pct = Math.round((currentCondition / conditions.length) * 100);
+      progress.style.width = pct + '%';
+      counter.textContent = `${currentCondition} / ${conditions.length}`;
+    }
+
+    function renderCompleted() {
+      completedList.innerHTML = '';
+      if (!completed.length) {
+        completedList.innerHTML = '<div class="completed-item">Sin validaciones completadas.</div>';
+        return;
+      }
+
+      completed.slice(0, 8).forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'completed-item';
+        div.textContent = `✓ ${item}`;
+        completedList.appendChild(div);
+      });
+    }
+
+    function showServerUnavailable() {
+      serverScreen.classList.add('active');
+      let pct = 0;
+
+      const interval = setInterval(() => {
+        pct += Math.floor(Math.random() * 13) + 5;
+
+        if (pct >= 100) {
+          pct = 100;
+          clearInterval(interval);
+          setTimeout(resetAll, 1200);
+        }
+
+        serverText.innerHTML = `Recopilando información del error... ${pct}% completado<br><br>Código de detención: SERVER_NOT_AVAILABLE<br>Archivo afectado: registro_final.dll<br>Estado: intente más tarde su registro`;
+      }, 230);
+    }
+
+    function resetAll() {
+      serverScreen.classList.remove('active');
+      currentCondition = 0;
+      completed = [];
+      passwordInput.value = '';
+      progress.style.width = '0%';
+      counter.textContent = `0 / ${conditions.length}`;
+      hint.className = 'hint warn';
+      hint.textContent = 'Servidor reiniciado.\nIntente más tarde su registro.';
+      completedList.innerHTML = '<div class="completed-item">Sin validaciones completadas.</div>';
+    }
+
+    function randomLightning() {
+      lightning.classList.add('active');
+      setTimeout(() => lightning.classList.remove('active'), 360);
+    }
+
+    setInterval(() => {
+      if (Math.random() < .28) {
+        randomLightning();
+      }
+    }, 3200);
+  </script>
+</body>
+</html>
