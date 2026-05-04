@@ -545,10 +545,6 @@
       <div class="progress-wrap">
         <div class="progress" id="progress"></div>
       </div>
-
-      <div class="completed-list" id="completedList">
-        <div class="completed-item">Sin validaciones completadas.</div>
-      </div>
     </section>
   </main>
 
@@ -678,9 +674,9 @@ btnRegister.addEventListener('click', () => {
 
     if (firstInvalidIndex !== -1) {
       fail(
-        `Validación ${firstInvalidIndex + 1} de ${conditions.length}\n` +
-        conditions[firstInvalidIndex].message
-      );
+  `Error en el registro.\n` +
+  conditions[firstInvalidIndex].message
+);
       return;
     }
 
