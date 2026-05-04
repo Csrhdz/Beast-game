@@ -615,58 +615,60 @@ input.addEventListener("input", () => {
   input.style.width = Math.min(newWidth, 500) + "px";
 });
 
-    const conditions = [
-  { message: 'El password debe tener mínimo 6 caracteres.', validate: p => p.length >= 6, done: 'Longitud mínima aceptada.' },
-  { message: 'Agrega una letra mayúscula.', validate: p => /[A-ZÁÉÍÓÚÑ]/.test(p), done: 'Mayúscula detectada.' },
-  { message: 'Agrega una letra minúscula.', validate: p => /[a-záéíóúñ]/.test(p), done: 'Minúscula detectada.' },
-  { message: 'Agrega un número.', validate: p => /\d/.test(p), done: 'Número detectado.' },
-  { message: 'Agrega un carácter especial como @, #, $, %, & o !.', validate: p => /[@#$%&!*_.\-]/.test(p), done: 'Símbolo aceptado.' },
-  { message: 'El password debe iniciar con mayúscula.', validate: p => /^[A-ZÁÉÍÓÚÑ]/.test(p), done: 'Inicio correcto.' },
-  { message: 'Agrega la suma de 1 y 7.', validate: p => p.includes('8'), done: 'Suma aceptada.' },
-  { message: 'Agrega la raíz cuadrada de 81.', validate: p => p.includes('9'), done: 'Raíz cuadrada aceptada.' },
-  { message: 'Agrega el resultado de 5 x 5.', validate: p => p.includes('25'), done: 'Multiplicación aceptada.' },
-  { message: 'Agrega el resultado de 100 / 4.', validate: p => p.includes('25'), done: 'División aceptada.' },
-  { message: 'Agrega el número romano de 10.', validate: p => /X/.test(p), done: 'Número romano aceptado.' },
-  { message: 'Agrega el número romano de 5.', validate: p => /V/.test(p), done: 'Número romano V aceptado.' },
-  { message: 'Agrega la letra Ñ.', validate: p => /ñ|Ñ/.test(p), done: 'Ñ aceptada.' },
-  { message: 'Agrega un guion bajo "_".', validate: p => p.includes('_'), done: 'Guion bajo aceptado.' },
-  { message: 'Agrega la palabra bestia.', validate: p => /bestia/i.test(p), done: 'Bestia detectada.' },
-  { message: 'Agrega un emoji.', validate: p => /[\u{1F300}-\u{1FAFF}]/u.test(p), done: 'Emoji detectado.' },
-  { message: 'Agrega un punto ".".', validate: p => p.includes('.'), done: 'Punto detectado.' },
-  { message: 'Agrega una coma ",".', validate: p => p.includes(','), done: 'Coma detectada.' },
-  { message: 'Agrega un signo de pregunta.', validate: p => p.includes('?') || p.includes('¿'), done: 'Pregunta detectada.' },
-  { message: 'Agrega un signo de admiración.', validate: p => p.includes('!') || p.includes('¡'), done: 'Admiración detectada.' },
-  { message: 'Agrega el número 777.', validate: p => p.includes('777'), done: '777 aceptado.' },
-  { message: 'Agrega el número de la Bestia.', validate: p => p.includes('666'), done: '666 aceptado.' },
-  { message: 'Agrega el año en que empezó el COVID oficialmente.', validate: p => p.includes('2020'), done: 'Año aceptado.' },
-  { message: 'Agrega el número de emergencia de México.', validate: p => p.includes('911'), done: 'Emergencia aceptada.' },
-  { message: 'Agrega el número de Pi con dos decimales.', validate: p => p.includes('3.14'), done: 'Pi aceptado.' },
-  { message: 'Agrega el doble de 21.', validate: p => p.includes('42'), done: 'Doble aceptado.' },
-  { message: 'Agrega el resultado de 12 + 12.', validate: p => p.includes('24'), done: 'Suma doble aceptada.' },
-  { message: 'El password debe tener más de 25 caracteres.', validate: p => p.length > 25, done: 'Longitud avanzada aceptada.' },
-  { message: 'El password debe tener menos de 90 caracteres.', validate: p => p.length < 90, done: 'Longitud máxima aceptada.' },
-  { message: 'Agrega una vocal con acento.', validate: p => /[áéíóúÁÉÍÓÚ]/.test(p), done: 'Acento detectado.' },
-  { message: 'Agrega una palabra en inglés: game, play, dark, fire o win.', validate: p => /(game|play|dark|fire|win)/i.test(p), done: 'Inglés aceptado.' },
-  { message: 'Agrega una palabra en español: juego, fuego, sombra o clave.', validate: p => /(juego|fuego|sombra|clave)/i.test(p), done: 'Español aceptado.' },
-  { message: 'Agrega una diagonal "/".', validate: p => p.includes('/'), done: 'Diagonal aceptada.' },
-  { message: 'Agrega una diagonal invertida "\\\\".', validate: p => p.includes('\\'), done: 'Diagonal invertida aceptada.' },
-  { message: 'Agrega un paréntesis.', validate: p => /[()]/.test(p), done: 'Paréntesis aceptado.' },
-  { message: 'Agrega un corchete.', validate: p => /[\[\]]/.test(p), done: 'Corchete aceptado.' },
-  { message: 'Agrega una llave.', validate: p => /[{}]/.test(p), done: 'Llave aceptada.' },
-  { message: 'Agrega una letra griega como Ω, α o β.', validate: p => /[Ωαβ]/.test(p), done: 'Letra griega detectada.' },
-  { message: 'Agrega un símbolo musical como ♪ o ♫.', validate: p => /[♪♫]/.test(p), done: 'Símbolo musical detectado.' },
-  { message: 'Agrega un símbolo zodiacal como ♈ o ♌.', validate: p => /[♈♉♊♋♌♍♎♏♐♑♒♓]/.test(p), done: 'Zodiaco aceptado.' },
-  { message: 'Agrega el símbolo infinito.', validate: p => p.includes('∞'), done: 'Infinito aceptado.' },
-  { message: 'Agrega un color hexadecimal como #FF0000.', validate: p => /#[0-9a-fA-F]{6}/.test(p), done: 'Color hexadecimal detectado.' },
-  { message: 'Agrega la IP 127.0.0.1.', validate: p => p.includes('127.0.0.1'), done: 'IP local aceptada.' },
-  { message: 'Agrega una extensión .exe.', validate: p => /\.exe/i.test(p), done: 'EXE aceptado.' },
-  { message: 'Agrega una extensión .sys.', validate: p => /\.sys/i.test(p), done: 'SYS aceptado.' },
-  { message: 'Agrega una extensión .jpg.', validate: p => /\.jpg/i.test(p), done: 'JPG aceptado.' },
-  { message: 'Agrega la palabra registro.', validate: p => /registro/i.test(p), done: 'Registro detectado.' },
-  { message: 'Agrega la palabra validado.', validate: p => /validado/i.test(p), done: 'Validado detectado.' },
-  { message: 'Agrega la palabra acceso.', validate: p => /acceso/i.test(p), done: 'Acceso detectado.' },
-  { message: 'Agrega la palabra imposible.', validate: p => /imposible/i.test(p), done: 'Imposible detectado.' },
-  { message: 'El password debe terminar con número.', validate: p => /\d$/.test(p), done: 'Final numérico.' }
+const conditions = [
+  { message: 'El password debe tener mínimo 6 caracteres.', validate: p => p.length >= 6 },
+  { message: 'El password debe tener una letra mayúscula.', validate: p => /[A-ZÁÉÍÓÚÑ]/.test(p) },
+  { message: 'El password debe tener una letra minúscula.', validate: p => /[a-záéíóúñ]/.test(p) },
+  { message: 'El password debe tener un número.', validate: p => /\d/.test(p) },
+  { message: 'El password debe tener un símbolo.', validate: p => /[@#$%&!*_.\-]/.test(p) },
+  { message: 'El password debe iniciar con mayúscula.', validate: p => /^[A-ZÁÉÍÓÚÑ]/.test(p) },
+
+  { message: 'El password debe tener el resultado de 1 + 7.', validate: p => p.includes('8') },
+  { message: 'El password debe tener el resultado de 5 x 5.', validate: p => p.includes('25') },
+  { message: 'El password debe tener el resultado de 12 + 12.', validate: p => p.includes('24') },
+
+  { message: 'El password debe tener algo redondo, caliente y que sale en la mañana.', validate: p => /sol|☀️|🌞/i.test(p) },
+  { message: 'El password debe tener un animal que ladra.', validate: p => /perro|🐶|🐕/i.test(p) },
+  { message: 'El password debe tener un animal que dice miau.', validate: p => /gato|🐱|🐈/i.test(p) },
+  { message: 'El password debe tener un animal que nada.', validate: p => /pez|🐟/i.test(p) },
+  { message: 'El password debe tener un animal que vuela.', validate: p => /ave|pajaro|pájaro|🐦/i.test(p) },
+  { message: 'El password debe tener un animal que hace miel.', validate: p => /abeja|🐝/i.test(p) },
+
+  { message: 'El password debe tener una fruta roja y dulce.', validate: p => /fresa|🍓/i.test(p) },
+  { message: 'El password debe tener una fruta amarilla y tropical.', validate: p => /mango|🥭/i.test(p) },
+  { message: 'El password debe tener algo dulce que hacen las abejas.', validate: p => /miel|🍯/i.test(p) },
+  { message: 'El password debe tener algo salado que va en la comida.', validate: p => /sal/i.test(p) },
+
+  { message: 'El password debe tener el número de emergencia en México.', validate: p => p.includes('911') },
+  { message: 'El password debe tener un año del COVID.', validate: p => p.includes('2020') || p.includes('2021') },
+  { message: 'El password debe tener el número de la Bestia.', validate: p => p.includes('666') },
+  { message: 'El password debe tener el número de la suerte.', validate: p => p.includes('777') },
+
+  { message: 'El password debe tener un emoji.', validate: p => /[\u{1F300}-\u{1FAFF}]/u.test(p) },
+  { message: 'El password debe tener fuego.', validate: p => /fuego|🔥/i.test(p) },
+  { message: 'El password debe tener risa.', validate: p => /jaja|😂|🤣/i.test(p) },
+  { message: 'El password debe tener miedo.', validate: p => /boo|😱|👻/i.test(p) },
+
+  { message: 'El password debe tener la letra Ñ.', validate: p => /ñ|Ñ/.test(p) },
+  { message: 'El password debe tener un guion bajo.', validate: p => p.includes('_') },
+  { message: 'El password debe tener un punto.', validate: p => p.includes('.') },
+  { message: 'El password debe tener una coma.', validate: p => p.includes(',') },
+  { message: 'El password debe tener una pregunta.', validate: p => p.includes('?') || p.includes('¿') },
+  { message: 'El password debe tener admiración.', validate: p => p.includes('!') || p.includes('¡') },
+
+  { message: 'El password debe tener un color.', validate: p => /rojo|azul|verde|🔴|🔵|🟢/i.test(p) },
+  { message: 'El password debe tener algo imposible.', validate: p => /imposible/i.test(p) },
+
+  { message: 'El password debe tener más de 20 caracteres.', validate: p => p.length > 20 },
+  { message: 'El password debe tener menos de 80 caracteres.', validate: p => p.length < 80 },
+
+  { message: 'El password debe tener una vocal con acento.', validate: p => /[áéíóúÁÉÍÓÚ]/.test(p) },
+  { message: 'El password debe tener una diagonal.', validate: p => p.includes('/') },
+  { message: 'El password debe tener paréntesis.', validate: p => /[()]/.test(p) },
+
+  { message: 'El password debe tener la palabra final.', validate: p => /final/i.test(p) },
+  { message: 'El password debe tener la palabra acceso.', validate: p => /acceso/i.test(p) },
+  { message: 'El password debe terminar con número.', validate: p => /\d$/.test(p) }
 ];
 
     const systemMessages = {
@@ -762,22 +764,34 @@ input.addEventListener("input", () => {
     }
 
     function getBrutalMessage(index, name) {
-      let bank;
+  const user = name || 'humano';
 
-      if (index < 10) bank = systemMessages.soft;
-      else if (index < 25) bank = systemMessages.medium;
-      else if (index < 40) bank = systemMessages.hard;
-      else if (index < 48) bank = systemMessages.nightmare;
-      else bank = systemMessages.final;
+  const mensajes = [
+    `${user}, empezamos fuerte y ya fallaste.`,
+    `${user}, eso no cuenta, pero buen intento.`,
+    `${user}, el sistema esperaba más de ti.`,
+    `${user}, no era tan difícil.`,
+    `${user}, la Bestia acaba de suspirar.`,
+    `${user}, casi... pero no.`,
+    `${user}, eso estuvo creativo, pero incorrecto.`,
+    `${user}, vuelve a leer, no muerde. Bueno... todavía.`,
+    `${user}, el password no se va a completar solo.`,
+    `${user}, la Bestia está perdiendo la paciencia.`,
+    `${user}, eso fue valiente, no correcto.`,
+    `${user}, intenta otra vez antes de que el sistema se arrepienta.`
+  ];
 
-      let message = bank[Math.floor(Math.random() * bank.length)];
+  if (index > 25) {
+    mensajes.push(
+      `${user}, ya llegaste lejos; no lo arruines ahora.`,
+      `${user}, borrar cosas a estas alturas sería una tragedia.`,
+      `${user}, la Bestia ya memorizó tus errores.`,
+      `${user}, el sistema te está juzgando en silencio.`
+    );
+  }
 
-      if (index >= 30 && Math.random() < .6) {
-        message = `${name}, ${message.charAt(0).toLowerCase()}${message.slice(1)}`;
-      }
-
-      return message;
-    }
+  return mensajes[Math.floor(Math.random() * mensajes.length)];
+}
 
     function fail(message, index) {
       hint.className = index >= 25 ? 'hint danger' : 'hint warn';
