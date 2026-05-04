@@ -239,13 +239,18 @@
       to { transform: translateY(7px) scaleY(1); opacity: .9; }
     }
 
-   .card {
+.card {
+  width: 100%;
+  padding: clamp(18px, 4vw, 28px);
+  border-radius: 28px;
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(255,255,255,.25);
   box-shadow:
     0 20px 60px rgba(0,0,0,.6),
     inset 0 0 0 1px rgba(255,255,255,.08);
+  position: relative;
+  overflow: hidden;
 }
 
     .card::before {
@@ -1066,7 +1071,7 @@ function playAlert() {
         if (pct >= 100) {
           pct = 100;
           clearInterval(interval);
-          setTimeout(resetAll, 1400);😊😊😊
+          setTimeout(resetAll, 1400);
         }
 
         serverText.innerHTML =
