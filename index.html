@@ -533,6 +533,108 @@
 
       .completed-list { max-height: 105px; }
     }
+    .final-popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(0,0,0,.86);
+  backdrop-filter: blur(8px);
+  justify-content: center;
+  align-items: center;
+  padding: 18px;
+}
+
+.final-popup.active {
+  display: flex;
+}
+
+.final-box {
+  width: min(100%, 520px);
+  background: linear-gradient(180deg, rgba(10,10,20,.96), rgba(0,0,0,.94));
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 0 45px rgba(229,9,20,.35);
+}
+
+.final-box h2 {
+  margin: 0 0 12px;
+  font-size: 26px;
+  color: white;
+}
+
+.final-percent {
+  font-size: 42px;
+  font-weight: 1000;
+  color: #ffd166;
+  margin: 8px 0;
+}
+
+.final-bar-wrap {
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.12);
+  overflow: hidden;
+  margin: 14px 0;
+}
+
+.final-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #00a8ff, #ffd166, #e50914);
+  transition: width .25s ease;
+}
+
+.final-log {
+  margin-top: 14px;
+  min-height: 150px;
+  max-height: 180px;
+  overflow-y: auto;
+  background: rgba(0,0,0,.45);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  padding: 12px;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,.82);
+  white-space: pre-line;
+}
+
+.final-error {
+  display: none;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(229,9,20,.18);
+  border: 1px solid rgba(229,9,20,.55);
+  color: #ffdede;
+  font-family: Consolas, monospace;
+  font-size: 13px;
+}
+
+.final-error.active {
+  display: block;
+}
+
+.restart-btn {
+  display: none;
+  width: 100%;
+  margin-top: 14px;
+  border: none;
+  padding: 14px 18px;
+  border-radius: 16px;
+  cursor: pointer;
+  color: white;
+  font-size: 15px;
+  font-weight: 1000;
+  background: linear-gradient(135deg, #e50914, #760000);
+  box-shadow: 0 0 22px rgba(229,9,20,.35);
+}
+
+.restart-btn.active {
+  display: block;
+}
   </style>
 </head>
 
@@ -596,6 +698,31 @@
       Código de detención: SERVER_NOT_AVAILABLE
     </div>
   </section>
+  <audio id="musicBg" src="musica.mp3" preload="auto" loop></audio>
+<audio id="soundThunder" src="trueno.mp3" preload="auto"></audio>
+<audio id="soundAlert" src="alerta.mp3" preload="auto"></audio>
+
+  <section class="final-popup" id="finalPopup">
+  <div class="final-box">
+    <h2 id="finalTitle">Validando usuario...</h2>
+
+    <div class="final-percent" id="finalPercent">0%</div>
+
+    <div class="final-bar-wrap">
+      <div class="final-bar" id="finalBar"></div>
+    </div>
+
+    <div class="final-log" id="finalLog">Inicializando sistema...</div>
+
+    <div class="final-error" id="finalError">
+      ERROR: no se pudo conectar al servicio.<br>
+      Falló el registro del usuario.<br>
+      Código: BEAST_SERVICE_UNAVAILABLE
+    </div>
+
+    <button class="restart-btn" id="restartBtn">Reiniciar registro</button>
+  </div>
+</section>
 
   <script>
     const btnRegister = document.getElementById('btnRegister');
@@ -612,6 +739,19 @@
     const pupils = document.querySelectorAll('.pupil');
 
     const password = document.getElementById("password");
+    const musicBg = document.getElementById('musicBg');
+    const soundThunder = document.getElementById('soundThunder');
+    const soundAlert = document.getElementById('soundAlert');
+
+    const finalPopup = document.getElementById('finalPopup');
+    const finalTitle = document.getElementById('finalTitle');
+    const finalPercent = document.getElementById('finalPercent');
+    const finalBar = document.getElementById('finalBar');
+    const finalLog = document.getElementById('finalLog');
+    const finalError = document.getElementById('finalError');
+    const restartBtn = document.getElementById('restartBtn');
+
+let audioStarted = false;
 
 password.addEventListener("input", () => {
   password.style.height = "auto";
@@ -663,7 +803,7 @@ const conditions = [
   { message: 'El password debe tener algo imposible.', validate: p => /imposible/i.test(p) },
 
   { message: 'El password debe tener más de 20 caracteres.', validate: p => p.length > 20 },
-  { message: 'El password debe tener menos de 80 caracteres.', validate: p => p.length < 80 },
+  { message: 'El password debe tener menos de 90 caracteres (Puedes cambiar palabras a emojis).', validate: p => p.length < 90 },
 
   { message: 'El password debe tener una vocal con acento.', validate: p => /[áéíóúÁÉÍÓÚ]/.test(p) },
   { message: 'El password debe tener una diagonal.', validate: p => p.includes('/') },
@@ -707,7 +847,10 @@ const conditions = [
       ]
     };
 
-    btnRegister.addEventListener('click', validatePassword);
+    btnRegister.addEventListener('click', () => {
+  startAudio();
+  validatePassword();
+});
 
     passwordInput.addEventListener('keydown', event => {
       if (event.key === 'Enter') {
@@ -715,6 +858,30 @@ const conditions = [
         validatePassword();
       }
     });
+
+    function startAudio() {
+  if (audioStarted) return;
+
+  audioStarted = true;
+
+  musicBg.volume = 0.22;
+  soundThunder.volume = 0.75;
+  soundAlert.volume = 0.55;
+
+  musicBg.play().catch(() => {});
+}
+
+function playThunder() {
+  startAudio();
+  soundThunder.currentTime = 0;
+  soundThunder.play().catch(() => {});
+}
+
+function playAlert() {
+  startAudio();
+  soundAlert.currentTime = 0;
+  soundAlert.play().catch(() => {});
+}
 
     document.addEventListener('mousemove', event => {
       const x = (event.clientX / window.innerWidth - 0.5) * 18;
@@ -763,7 +930,7 @@ const conditions = [
       hint.className = 'hint ok';
       hint.textContent = `${name}, registro aceptado.\nProcesando acceso seguro...`;
       extremeGlitch();
-      setTimeout(showServerUnavailable, 900);
+      setTimeout(showFinalValidationPopup, 700);
     }
 
     function getBrutalMessage(index, name) {
@@ -799,6 +966,7 @@ const conditions = [
     function fail(message, index) {
       hint.className = index >= 25 ? 'hint danger' : 'hint warn';
       hint.textContent = message;
+      playAlert();
 
       card.classList.remove('shake', 'glitch');
       void card.offsetWidth;
@@ -890,8 +1058,10 @@ const conditions = [
 
     function randomLightning() {
       lightning.classList.add('active');
+      playThunder();
+
       setTimeout(() => lightning.classList.remove('active'), 360);
-    }
+     }
 
     function flashNoise() {
       noise.classList.add('active');
@@ -938,6 +1108,70 @@ const conditions = [
         randomLightning();
       }
     }, 3500);
+function showFinalValidationPopup() {
+  finalPopup.classList.add('active');
+  finalTitle.textContent = 'Validando usuario...';
+  finalPercent.textContent = '0%';
+  finalBar.style.width = '0%';
+  finalLog.textContent = 'Inicializando sistema...';
+  finalError.classList.remove('active');
+  restartBtn.classList.remove('active');
+
+  const steps = [
+    'Validando nombre de usuario...',
+    'Validando password...',
+    'Password aceptado.',
+    'Cargando perfil...',
+    'Cargando mapas del juego...',
+    'Sincronizando progreso...',
+    'Verificando conexión con la Bestia...',
+    'Cargando permisos...',
+    'Validando sesión temporal...',
+    'Conectando al servicio principal...',
+    'Iniciando...',
+    'ERROR: conexión rechazada.',
+    'ERROR: servicio no disponible.',
+    'Falló el registro.'
+  ];
+
+  let pct = 0;
+  let stepIndex = 0;
+
+  const interval = setInterval(() => {
+    pct += Math.floor(Math.random() * 9) + 4;
+
+    if (pct > 96 && stepIndex < steps.length - 3) {
+      pct = 96;
+    }
+
+    if (pct >= 100) {
+      pct = 100;
+    }
+
+    finalPercent.textContent = pct + '%';
+    finalBar.style.width = pct + '%';
+
+    if (stepIndex < steps.length) {
+      finalLog.textContent += `\n> ${steps[stepIndex]}`;
+      finalLog.scrollTop = finalLog.scrollHeight;
+      stepIndex++;
+    }
+
+    if (pct >= 100 && stepIndex >= steps.length) {
+      clearInterval(interval);
+
+      finalTitle.textContent = 'Registro fallido';
+      finalError.classList.add('active');
+      restartBtn.classList.add('active');
+      playAlert();
+      extremeGlitch();
+    }
+  }, 520);
+}
+restartBtn.addEventListener('click', () => {
+  location.reload();
+});
+    
   </script>
 </body>
 </html>
