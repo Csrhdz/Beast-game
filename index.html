@@ -999,57 +999,58 @@ function playAlert() {
   return msg;
 }
 
-    function fail(message, index) {
-      hint.className = index >= 25 ? 'hint danger' : 'hint warn';
-      hint.textContent = message;
-      playAlert();
+   function fail(message, index) {
+  hint.className = index >= 25 ? 'hint danger' : 'hint warn';
+  hint.textContent = message;
+  playAlert();
 
-      card.classList.remove('shake', 'glitch');
-      void card.offsetWidth;
-      card.classList.add(index >= 20 ? 'glitch' : 'shake');
+  card.classList.remove('shake', 'glitch');
+  void card.offsetWidth;
+  card.classList.add(index >= 20 ? 'glitch' : 'shake');
 
-      randomLightning();
-
-      if (index >= 8) flashNoise();
-      if (index >= 12) spawnWhisper();
-      if (index >= 25) spawnWhisper();
-      if (index >= 35) spawnWhisper();
-      if (index >= 40) extremeGlitch();
-    }
+  if (index >= 8) flashNoise();
+  if (index >= 12) spawnWhisper();
+  if (index >= 25) spawnWhisper();
+  if (index >= 35) spawnWhisper();
+  if (index >= 40) extremeGlitch();
+}
 
     function updateProgress(doneCount) {
       const pct = Math.round((doneCount / conditions.length) * 100);
       progress.style.width = pct + '%';
     }
 
-    function renderCompleted(doneCount) {
-      completedList.innerHTML = '';
+ function renderCompleted(doneCount) {
+  completedList.innerHTML = '';
 
-      if (doneCount === 0) {
-        completedList.innerHTML = '<div class="completed-item">El sistema todavía no confía en ti.</div>';
-        return;
-      }
+  if (doneCount === 0) {
+    completedList.innerHTML = '<div class="completed-item">El sistema todavía no confía en ti.</div>';
+    return;
+  }
 
-      const frases = [
-        'Fragmentos aceptados.',
-        'El acceso se está formando.',
-        'La Bestia reconoce parte de tu clave.',
-        'Los requisitos anteriores siguen vivos.',
-        'No rompas lo que ya despertaste.'
-      ];
+  const frases = [
+    'Fragmentos aceptados.',
+    'El acceso se está formando.',
+    'La Bestia reconoce parte de tu clave.',
+    'Los requisitos anteriores siguen vivos.',
+    'No rompas lo que ya despertaste.'
+  ];
 
-      const title = document.createElement('div');
-      title.className = 'completed-item';
-      title.textContent = frases[Math.min(Math.floor(doneCount / 10), frases.length - 1)];
-      completedList.appendChild(title);
+  const title = document.createElement('div');
+  title.className = 'completed-item';
+  title.textContent = frases[Math.min(Math.floor(doneCount / 10), frases.length - 1)];
+  completedList.appendChild(title);
 
-      conditions.slice(0, doneCount).slice(-6).forEach(condition => {
-        const div = document.createElement('div');
-        div.className = 'completed-item';
-        div.textContent = `✓ ${condition.done}`;
-        completedList.appendChild(div);
-      });
-    }
+  conditions.slice(0, doneCount).slice(-6).forEach((condition) => {
+    const div = document.createElement('div');
+    div.className = 'completed-item';
+
+    const texto = condition.done || condition.message.replace('El password debe tener ', '').replace('El password debe ', '');
+
+    div.textContent = `✓ ${texto}`;
+    completedList.appendChild(div);
+  });
+}
 
     function intensify(doneCount) {
       document.body.classList.remove('hell-1', 'hell-2', 'hell-3', 'hell-4');
