@@ -600,15 +600,12 @@
   { message: 'Agrega un número.', validate: p => /\d/.test(p), done: 'Número detectado.' },
   { message: 'Agrega un carácter especial como @, #, $, %, & o !.', validate: p => /[@#$%&!*_.\-]/.test(p), done: 'Símbolo aceptado.' },
   { message: 'El password debe iniciar con mayúscula.', validate: p => /^[A-ZÁÉÍÓÚÑ]/.test(p), done: 'Inicio correcto.' },
-  
-
   { message: 'Agrega la suma de 1 y 7.', validate: p => p.includes('8'), done: 'Suma aceptada.' },
   { message: 'Agrega la raíz cuadrada de 81.', validate: p => p.includes('9'), done: 'Raíz cuadrada aceptada.' },
   { message: 'Agrega el resultado de 5 x 5.', validate: p => p.includes('25'), done: 'Multiplicación aceptada.' },
   { message: 'Agrega el resultado de 100 / 4.', validate: p => p.includes('25'), done: 'División aceptada.' },
   { message: 'Agrega el número romano de 10.', validate: p => /X/.test(p), done: 'Número romano aceptado.' },
   { message: 'Agrega el número romano de 5.', validate: p => /V/.test(p), done: 'Número romano V aceptado.' },
-
   { message: 'Agrega la letra Ñ.', validate: p => /ñ|Ñ/.test(p), done: 'Ñ aceptada.' },
   { message: 'Agrega un guion bajo "_".', validate: p => p.includes('_'), done: 'Guion bajo aceptado.' },
   { message: 'Agrega la palabra bestia.', validate: p => /bestia/i.test(p), done: 'Bestia detectada.' },
@@ -617,38 +614,32 @@
   { message: 'Agrega una coma ",".', validate: p => p.includes(','), done: 'Coma detectada.' },
   { message: 'Agrega un signo de pregunta.', validate: p => p.includes('?') || p.includes('¿'), done: 'Pregunta detectada.' },
   { message: 'Agrega un signo de admiración.', validate: p => p.includes('!') || p.includes('¡'), done: 'Admiración detectada.' },
-
   { message: 'Agrega el número 777.', validate: p => p.includes('777'), done: '777 aceptado.' },
-  { message: 'Agrega el número 666.', validate: p => p.includes('666'), done: '666 aceptado.' },
+  { message: 'Agrega el número de la Bestia.', validate: p => p.includes('666'), done: '666 aceptado.' },
   { message: 'Agrega el año en que empezó el COVID oficialmente.', validate: p => p.includes('2020'), done: 'Año aceptado.' },
   { message: 'Agrega el número de emergencia de México.', validate: p => p.includes('911'), done: 'Emergencia aceptada.' },
   { message: 'Agrega el número de Pi con dos decimales.', validate: p => p.includes('3.14'), done: 'Pi aceptado.' },
   { message: 'Agrega el doble de 21.', validate: p => p.includes('42'), done: 'Doble aceptado.' },
   { message: 'Agrega el resultado de 12 + 12.', validate: p => p.includes('24'), done: 'Suma doble aceptada.' },
-
   { message: 'El password debe tener más de 25 caracteres.', validate: p => p.length > 25, done: 'Longitud avanzada aceptada.' },
   { message: 'El password debe tener menos de 90 caracteres.', validate: p => p.length < 90, done: 'Longitud máxima aceptada.' },
   { message: 'Agrega una vocal con acento.', validate: p => /[áéíóúÁÉÍÓÚ]/.test(p), done: 'Acento detectado.' },
   { message: 'Agrega una palabra en inglés: game, play, dark, fire o win.', validate: p => /(game|play|dark|fire|win)/i.test(p), done: 'Inglés aceptado.' },
   { message: 'Agrega una palabra en español: juego, fuego, sombra o clave.', validate: p => /(juego|fuego|sombra|clave)/i.test(p), done: 'Español aceptado.' },
-
   { message: 'Agrega una diagonal "/".', validate: p => p.includes('/'), done: 'Diagonal aceptada.' },
   { message: 'Agrega una diagonal invertida "\\\\".', validate: p => p.includes('\\'), done: 'Diagonal invertida aceptada.' },
   { message: 'Agrega un paréntesis.', validate: p => /[()]/.test(p), done: 'Paréntesis aceptado.' },
   { message: 'Agrega un corchete.', validate: p => /[\[\]]/.test(p), done: 'Corchete aceptado.' },
   { message: 'Agrega una llave.', validate: p => /[{}]/.test(p), done: 'Llave aceptada.' },
-
   { message: 'Agrega una letra griega como Ω, α o β.', validate: p => /[Ωαβ]/.test(p), done: 'Letra griega detectada.' },
   { message: 'Agrega un símbolo musical como ♪ o ♫.', validate: p => /[♪♫]/.test(p), done: 'Símbolo musical detectado.' },
   { message: 'Agrega un símbolo zodiacal como ♈ o ♌.', validate: p => /[♈♉♊♋♌♍♎♏♐♑♒♓]/.test(p), done: 'Zodiaco aceptado.' },
   { message: 'Agrega el símbolo infinito.', validate: p => p.includes('∞'), done: 'Infinito aceptado.' },
-
   { message: 'Agrega un color hexadecimal como #FF0000.', validate: p => /#[0-9a-fA-F]{6}/.test(p), done: 'Color hexadecimal detectado.' },
   { message: 'Agrega la IP 127.0.0.1.', validate: p => p.includes('127.0.0.1'), done: 'IP local aceptada.' },
   { message: 'Agrega una extensión .exe.', validate: p => /\.exe/i.test(p), done: 'EXE aceptado.' },
   { message: 'Agrega una extensión .sys.', validate: p => /\.sys/i.test(p), done: 'SYS aceptado.' },
   { message: 'Agrega una extensión .jpg.', validate: p => /\.jpg/i.test(p), done: 'JPG aceptado.' },
-
   { message: 'Agrega la palabra registro.', validate: p => /registro/i.test(p), done: 'Registro detectado.' },
   { message: 'Agrega la palabra validado.', validate: p => /validado/i.test(p), done: 'Validado detectado.' },
   { message: 'Agrega la palabra acceso.', validate: p => /acceso/i.test(p), done: 'Acceso detectado.' },
