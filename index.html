@@ -492,6 +492,17 @@
       line-height: 1.28;
     }
 
+    #mirror {
+  position: absolute;
+  visibility: hidden;
+  white-space: pre;
+  font-size: 16px;
+  font-family: inherit;
+  padding: 14px 15px;
+    }
+
+    
+
     .server-small {
       margin-top: 28px;
       font-size: clamp(14px, 2.6vw, 18px);
@@ -550,6 +561,7 @@
         <div class="field">
           <label for="password">Password</label>
           <input id="password" type="text" autocomplete="off" placeholder="Ingresa tu password">
+          <span id="mirror"></span>
         </div>
 
         <button class="btn" type="button" id="btnRegister">Registrarme</button>
@@ -592,6 +604,16 @@
     const serverScreen = document.getElementById('serverScreen');
     const serverText = document.getElementById('serverText');
     const pupils = document.querySelectorAll('.pupil');
+    const input = document.getElementById("password");
+    const mirror = document.getElementById("mirror");
+
+input.addEventListener("input", () => {
+  mirror.textContent = input.value || " ";
+
+  const newWidth = mirror.offsetWidth + 20;
+
+  input.style.width = Math.min(newWidth, 500) + "px";
+});
 
     const conditions = [
   { message: 'El password debe tener mínimo 6 caracteres.', validate: p => p.length >= 6, done: 'Longitud mínima aceptada.' },
