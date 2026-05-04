@@ -563,397 +563,209 @@
       Código de detención: SERVER_NOT_AVAILABLE
     </div>
   </section>
+<script>
+  const form = document.getElementById('form');
+  const nameInput = document.getElementById('name');
+  const passwordInput = document.getElementById('password');
+  const hint = document.getElementById('hint');
+  const progress = document.getElementById('progress');
+  const completedList = document.getElementById('completedList');
+  const card = document.getElementById('card');
+  const lightning = document.getElementById('lightning');
+  const serverScreen = document.getElementById('serverScreen');
+  const serverText = document.getElementById('serverText');
 
-  <script>
-    const form = document.getElementById('form');
-    const nameInput = document.getElementById('name');
-    const passwordInput = document.getElementById('password');
-    const hint = document.getElementById('hint');
-    const progress = document.getElementById('progress');
-    const counter = document.getElementById('counter');
-    const completedList = document.getElementById('completedList');
-    const card = document.getElementById('card');
-    const lightning = document.getElementById('lightning');
-    const serverScreen = document.getElementById('serverScreen');
-    const serverText = document.getElementById('serverText');
+  let maxUnlocked = 0;
 
-    let currentCondition = 0;
-    let completed = [];
+  const conditions = [
+    { message: 'El password debe tener mínimo 6 caracteres.', validate: p => p.length >= 6, done: 'Mínimo 6 caracteres' },
+    { message: 'Agrega una letra mayúscula.', validate: p => /[A-ZÁÉÍÓÚÑ]/.test(p), done: 'Tiene mayúscula' },
+    { message: 'Agrega una letra minúscula.', validate: p => /[a-záéíóúñ]/.test(p), done: 'Tiene minúscula' },
+    { message: 'Agrega un número.', validate: p => /\d/.test(p), done: 'Tiene número' },
+    { message: 'Agrega un carácter especial como @, #, $, %, & o !.', validate: p => /[@#$%&!*_.\-]/.test(p), done: 'Tiene carácter especial' },
+    { message: 'El password debe iniciar con mayúscula.', validate: p => /^[A-ZÁÉÍÓÚÑ]/.test(p), done: 'Inicia con mayúscula' },
+    { message: 'El password debe terminar con número.', validate: p => /\d$/.test(p), done: 'Termina con número' },
+    { message: 'Debe tener exactamente dos números.', validate: p => (p.match(/\d/g) || []).length === 2, done: 'Tiene exactamente dos números' },
+    { message: 'Agrega la letra Ñ.', validate: p => /ñ|Ñ/.test(p), done: 'Tiene Ñ' },
+    { message: 'Agrega un guion bajo "_".', validate: p => p.includes('_'), done: 'Tiene guion bajo' },
 
-    const conditions = [
-      {
-        message: 'El password debe tener mínimo 6 caracteres.',
-        validate: ({ password }) => password.length >= 6,
-        done: 'Password con mínimo 6 caracteres.'
-      },
-      {
-        message: 'Agrega una letra mayúscula.',
-        validate: ({ password }) => /[A-ZÁÉÍÓÚÑ]/.test(password),
-        done: 'Incluye mayúscula.'
-      },
-      {
-        message: 'Agrega una letra minúscula.',
-        validate: ({ password }) => /[a-záéíóúñ]/.test(password),
-        done: 'Incluye minúscula.'
-      },
-      {
-        message: 'Agrega un número.',
-        validate: ({ password }) => /\d/.test(password),
-        done: 'Incluye número.'
-      },
-      {
-        message: 'Agrega un carácter especial como @, #, $, %, & o !.',
-        validate: ({ password }) => /[@#$%&!*_.\-]/.test(password),
-        done: 'Incluye carácter especial.'
-      },
-      {
-        message: 'El password debe iniciar con mayúscula.',
-        validate: ({ password }) => /^[A-ZÁÉÍÓÚÑ]/.test(password),
-        done: 'Inicia con mayúscula.'
-      },
-      {
-        message: 'El password debe terminar con número.',
-        validate: ({ password }) => /\d$/.test(password),
-        done: 'Termina con número.'
-      },
-      {
-        message: 'Agrega exactamente dos números.',
-        validate: ({ password }) => (password.match(/\d/g) || []).length === 2,
-        done: 'Contiene exactamente dos números.'
-      },
-      {
-        message: 'Agrega la letra Ñ.',
-        validate: ({ password }) => /ñ|Ñ/.test(password),
-        done: 'Incluye Ñ.'
-      },
-      {
-        message: 'Agrega un guion bajo "_".',
-        validate: ({ password }) => password.includes('_'),
-        done: 'Incluye guion bajo.'
-      },
-      {
-        message: 'Agrega la palabra bestia.',
-        validate: ({ password }) => /bestia/i.test(password),
-        done: 'Incluye la palabra bestia.'
-      },
-      {
-        message: 'Ahora elimina la palabra bestia.',
-        validate: ({ password }) => !/bestia/i.test(password),
-        done: 'Ya no contiene la palabra bestia.'
-      },
-      {
-        message: 'Agrega un emoji.',
-        validate: ({ password }) => /[\u{1F300}-\u{1FAFF}]/u.test(password),
-        done: 'Incluye emoji.'
-      },
-      {
-        message: 'Agrega un punto ".".',
-        validate: ({ password }) => password.includes('.'),
-        done: 'Incluye punto.'
-      },
-      {
-        message: 'Agrega una coma ",".',
-        validate: ({ password }) => password.includes(','),
-        done: 'Incluye coma.'
-      },
-      {
-        message: 'Agrega un signo de pregunta.',
-        validate: ({ password }) => password.includes('?') || password.includes('¿'),
-        done: 'Incluye signo de pregunta.'
-      },
-      {
-        message: 'Agrega un signo de admiración.',
-        validate: ({ password }) => password.includes('!') || password.includes('¡'),
-        done: 'Incluye signo de admiración.'
-      },
-      {
-        message: 'Agrega la palabra CPU.',
-        validate: ({ password }) => /CPU/.test(password),
-        done: 'Incluye CPU.'
-      },
-      {
-        message: 'Agrega la palabra dll.',
-        validate: ({ password }) => /dll/i.test(password),
-        done: 'Incluye dll.'
-      },
-      {
-        message: 'Agrega la palabra apk.',
-        validate: ({ password }) => /apk/i.test(password),
-        done: 'Incluye apk.'
-      },
-      {
-        message: 'Agrega el número 777.',
-        validate: ({ password }) => password.includes('777'),
-        done: 'Incluye 777.'
-      },
-      {
-        message: 'Agrega el número 666.',
-        validate: ({ password }) => password.includes('666'),
-        done: 'Incluye 666.'
-      },
-      {
-        message: 'El password debe tener más de 15 caracteres.',
-        validate: ({ password }) => password.length > 15,
-        done: 'Tiene más de 15 caracteres.'
-      },
-      {
-        message: 'El password debe tener menos de 40 caracteres.',
-        validate: ({ password }) => password.length < 40,
-        done: 'Tiene menos de 40 caracteres.'
-      },
-      {
-        message: 'Agrega una vocal con acento.',
-        validate: ({ password }) => /[áéíóúÁÉÍÓÚ]/.test(password),
-        done: 'Incluye vocal con acento.'
-      },
-      {
-        message: 'Agrega una palabra en inglés.',
-        validate: ({ password }) => /(game|play|beast|dark|fire|win)/i.test(password),
-        done: 'Incluye una de estas palabra juego/bestia/fuego/obsuro en inglés.'
-      },
-      {
-        message: 'Agrega una palabra en español.',
-        validate: ({ password }) => /(juego|fuego|sombra|clave|bestia)/i.test(password),
-        done: 'Incluye palabra en español.'
-      },
-      {
-        message: 'Agrega un símbolo matemático.',
-        validate: ({ password }) => /[+\-*/=]/.test(password),
-        done: 'Incluye símbolo matemático.'
-      },
-      {
-        message: 'Agrega una diagonal "/".',
-        validate: ({ password }) => password.includes('/'),
-        done: 'Incluye diagonal.'
-      },
-      {
-        message: 'Agrega una diagonal invertida "\\\\".',
-        validate: ({ password }) => password.includes('\\'),
-        done: 'Incluye diagonal invertida.'
-      },
-      {
-        message: 'Agrega un paréntesis.',
-        validate: ({ password }) => /[()]/.test(password),
-        done: 'Incluye paréntesis.'
-      },
-      {
-        message: 'Agrega un corchete.',
-        validate: ({ password }) => /[\[\]]/.test(password),
-        done: 'Incluye corchete.'
-      },
-      {
-        message: 'Agrega una llave.',
-        validate: ({ password }) => /[{}]/.test(password),
-        done: 'Incluye llave.'
-      },
-      {
-        message: 'Agrega una letra griega como Ω, α o β.',
-        validate: ({ password }) => /[Ωαβ]/.test(password),
-        done: 'Incluye letra griega.'
-      },
-      {
-        message: 'Agrega un símbolo musical como ♪ o ♫.',
-        validate: ({ password }) => /[♪♫]/.test(password),
-        done: 'Incluye símbolo musical.'
-      },
-      {
-        message: 'Agrega un símbolo zodiacal como ♈ o ♌.',
-        validate: ({ password }) => /[♈♉♊♋♌♍♎♏♐♑♒♓]/.test(password),
-        done: 'Incluye símbolo zodiacal.'
-      },
-      {
-        message: 'Agrega un color hexadecimal, por ejemplo #FF0000.',
-        validate: ({ password }) => /#[0-9a-fA-F]{6}/.test(password),
-        done: 'Incluye color hexadecimal.'
-      },
-      {
-        message: 'Agrega una dirección IP 127.0.0.1.',
-        validate: ({ password }) => password.includes('127.0.0.1'),
-        done: 'Incluye IP local.'
-      },
-      {
-        message: 'Agrega una extensión .exe.',
-        validate: ({ password }) => /\.exe/i.test(password),
-        done: 'Incluye .exe.'
-      },
-      {
-        message: 'Agrega una extensión .sys.',
-        validate: ({ password }) => /\.sys/i.test(password),
-        done: 'Incluye .sys.'
-      },
-      {
-        message: 'Agrega una extensión .jpg.',
-        validate: ({ password }) => /\.jpg/i.test(password),
-        done: 'Incluye .jpg.'
-      },
-      {
-        message: 'Agrega la palabra registro.',
-        validate: ({ password }) => /registro/i.test(password),
-        done: 'Incluye registro.'
-      },
-      {
-        message: 'Agrega la palabra validado.',
-        validate: ({ password }) => /validado/i.test(password),
-        done: 'Incluye validado.'
-      },
-      {
-        message: 'Agrega la palabra acceso.',
-        validate: ({ password }) => /acceso/i.test(password),
-        done: 'Incluye acceso.'
-      },
-      {
-        message: 'Agrega la palabra final.',
-        validate: ({ password }) => /final/i.test(password),
-        done: 'Incluye final.'
-      },
-      {
-        message: 'Agrega la palabra temporal.',
-        validate: ({ password }) => /temporal/i.test(password),
-        done: 'Incluye temporal.'
-      },
-      {
-        message: 'Agrega la palabra seguro.',
-        validate: ({ password }) => /seguro/i.test(password),
-        done: 'Incluye seguro.'
-      },
-      {
-        message: 'Agrega la palabra sistema.',
-        validate: ({ password }) => /sistema/i.test(password),
-        done: 'Incluye sistema.'
-      },
-      {
-        message: 'Agrega la palabra perfecto.',
-        validate: ({ password }) => /perfecto/i.test(password),
-        done: 'Incluye perfecto.'
-      }
-    ];
+    { message: 'Agrega la palabra bestia.', validate: p => /bestia/i.test(p), done: 'Tiene la palabra bestia' },
+    { message: 'Ahora elimina la palabra bestia.', validate: p => !/bestia/i.test(p), done: 'Ya eliminaste bestia' },
+    { message: 'Agrega un emoji.', validate: p => /[\u{1F300}-\u{1FAFF}]/u.test(p), done: 'Tiene emoji' },
+    { message: 'Agrega un punto ".".', validate: p => p.includes('.'), done: 'Tiene punto' },
+    { message: 'Agrega una coma ",".', validate: p => p.includes(','), done: 'Tiene coma' },
+    { message: 'Agrega un signo de pregunta.', validate: p => p.includes('?') || p.includes('¿'), done: 'Tiene pregunta' },
+    { message: 'Agrega un signo de admiración.', validate: p => p.includes('!') || p.includes('¡'), done: 'Tiene admiración' },
+    { message: 'Agrega la palabra CPU.', validate: p => /CPU/.test(p), done: 'Tiene CPU' },
+    { message: 'Agrega la palabra dll.', validate: p => /dll/i.test(p), done: 'Tiene dll' },
+    { message: 'Agrega la palabra apk.', validate: p => /apk/i.test(p), done: 'Tiene apk' },
 
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-      validateStep();
-    });
+    { message: 'Agrega el número 777.', validate: p => p.includes('777'), done: 'Tiene 777' },
+    { message: 'Agrega el número 666.', validate: p => p.includes('666'), done: 'Tiene 666' },
+    { message: 'El password debe tener más de 15 caracteres.', validate: p => p.length > 15, done: 'Más de 15 caracteres' },
+    { message: 'El password debe tener menos de 40 caracteres.', validate: p => p.length < 40, done: 'Menos de 40 caracteres' },
+    { message: 'Agrega una vocal con acento.', validate: p => /[áéíóúÁÉÍÓÚ]/.test(p), done: 'Tiene vocal con acento' },
+    { message: 'Agrega una palabra en inglés como game, play, dark, fire o win.', validate: p => /(game|play|dark|fire|win)/i.test(p), done: 'Tiene palabra en inglés' },
+    { message: 'Agrega una palabra en español como juego, fuego, sombra o clave.', validate: p => /(juego|fuego|sombra|clave)/i.test(p), done: 'Tiene palabra en español' },
+    { message: 'Agrega un símbolo matemático como +, -, *, / o =.', validate: p => /[+\-*/=]/.test(p), done: 'Tiene símbolo matemático' },
+    { message: 'Agrega una diagonal "/".', validate: p => p.includes('/'), done: 'Tiene diagonal' },
+    { message: 'Agrega una diagonal invertida "\\\\".', validate: p => p.includes('\\'), done: 'Tiene diagonal invertida' },
 
-    passwordInput.addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        validateStep();
-      }
-    });
+    { message: 'Agrega un paréntesis.', validate: p => /[()]/.test(p), done: 'Tiene paréntesis' },
+    { message: 'Agrega un corchete.', validate: p => /[\[\]]/.test(p), done: 'Tiene corchete' },
+    { message: 'Agrega una llave.', validate: p => /[{}]/.test(p), done: 'Tiene llave' },
+    { message: 'Agrega una letra griega como Ω, α o β.', validate: p => /[Ωαβ]/.test(p), done: 'Tiene letra griega' },
+    { message: 'Agrega un símbolo musical como ♪ o ♫.', validate: p => /[♪♫]/.test(p), done: 'Tiene símbolo musical' },
+    { message: 'Agrega un símbolo zodiacal como ♈ o ♌.', validate: p => /[♈♉♊♋♌♍♎♏♐♑♒♓]/.test(p), done: 'Tiene símbolo zodiacal' },
+    { message: 'Agrega un color hexadecimal como #FF0000.', validate: p => /#[0-9a-fA-F]{6}/.test(p), done: 'Tiene color hexadecimal' },
+    { message: 'Agrega la IP 127.0.0.1.', validate: p => p.includes('127.0.0.1'), done: 'Tiene IP local' },
+    { message: 'Agrega una extensión .exe.', validate: p => /\.exe/i.test(p), done: 'Tiene .exe' },
+    { message: 'Agrega una extensión .sys.', validate: p => /\.sys/i.test(p), done: 'Tiene .sys' },
 
-    function validateStep() {
-      const data = {
-        name: nameInput.value.trim(),
-        password: passwordInput.value
-      };
+    { message: 'Agrega una extensión .jpg.', validate: p => /\.jpg/i.test(p), done: 'Tiene .jpg' },
+    { message: 'Agrega la palabra registro.', validate: p => /registro/i.test(p), done: 'Tiene registro' },
+    { message: 'Agrega la palabra validado.', validate: p => /validado/i.test(p), done: 'Tiene validado' },
+    { message: 'Agrega la palabra acceso.', validate: p => /acceso/i.test(p), done: 'Tiene acceso' },
+    { message: 'Agrega la palabra final.', validate: p => /final/i.test(p), done: 'Tiene final' },
+    { message: 'Agrega la palabra temporal.', validate: p => /temporal/i.test(p), done: 'Tiene temporal' },
+    { message: 'Agrega la palabra seguro.', validate: p => /seguro/i.test(p), done: 'Tiene seguro' },
+    { message: 'Agrega la palabra sistema.', validate: p => /sistema/i.test(p), done: 'Tiene sistema' },
+    { message: 'Agrega la palabra perfecto.', validate: p => /perfecto/i.test(p), done: 'Tiene perfecto' },
+    { message: 'Agrega la palabra imposible.', validate: p => /imposible/i.test(p), done: 'Tiene imposible' }
+  ];
 
-      if (!data.name) {
-        fail('Ingresa tu nombre para continuar.');
-        return;
-      }
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    validatePassword();
+  });
 
-      if (!data.password) {
-        fail('Ingresa tu password para continuar.');
-        return;
-      }
+  passwordInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      validatePassword();
+    }
+  });
 
-      if (currentCondition >= conditions.length) {
-        showServerUnavailable();
-        return;
-      }
+  function validatePassword() {
+    const name = nameInput.value.trim();
+    const password = passwordInput.value;
 
-      const condition = conditions[currentCondition];
-
-      if (!condition.validate(data)) {
-        fail(condition.message);
-        return;
-      }
-
-      completed.unshift(condition.done);
-      currentCondition++;
-      updateProgress();
-
-      if (currentCondition >= conditions.length) {
-        hint.className = 'hint ok';
-        hint.textContent = 'VALIDATION_COMPLETE\nProcesando registro...';
-        setTimeout(showServerUnavailable, 850);
-        return;
-      }
-
-      const nextCondition = conditions[currentCondition];
-      hint.className = 'hint warn';
-      hint.textContent = `Validación correcta.\nSiguiente requisito:\n${nextCondition.message}`;
-      renderCompleted();
+    if (!name) {
+      fail('Ingresa tu nombre para continuar.');
+      return;
     }
 
-    function fail(message) {
-      hint.className = 'hint warn';
-      hint.textContent = `No se pudo completar el registro.\n${message}`;
-      card.classList.remove('shake');
-      void card.offsetWidth;
-      card.classList.add('shake');
+    if (!password) {
+      fail('Ingresa tu password para continuar.');
+      return;
+    }
+
+    let firstInvalidIndex = -1;
+
+    for (let i = 0; i < conditions.length; i++) {
+      if (!conditions[i].validate(password)) {
+        firstInvalidIndex = i;
+        break;
+      }
+    }
+
+    const completedNow = firstInvalidIndex === -1 ? conditions.length : firstInvalidIndex;
+
+    maxUnlocked = completedNow;
+    updateProgress(completedNow);
+    renderCompleted(completedNow);
+
+    if (firstInvalidIndex !== -1) {
+      fail(
+        `Validación ${firstInvalidIndex + 1} de ${conditions.length}\n` +
+        conditions[firstInvalidIndex].message
+      );
+      return;
+    }
+
+    hint.className = 'hint ok';
+    hint.textContent = 'VALIDATION_COMPLETE\nProcesando registro...';
+
+    setTimeout(showServerUnavailable, 900);
+  }
+
+  function fail(message) {
+    hint.className = 'hint warn';
+    hint.textContent = `No se pudo completar el registro.\n${message}`;
+    card.classList.remove('shake');
+    void card.offsetWidth;
+    card.classList.add('shake');
+    randomLightning();
+  }
+
+  function updateProgress(doneCount) {
+    const pct = Math.round((doneCount / conditions.length) * 100);
+    progress.style.width = pct + '%';
+  }
+
+  function renderCompleted(doneCount) {
+    completedList.innerHTML = '';
+
+    if (doneCount === 0) {
+      completedList.innerHTML = '<div class="completed-item">Sin validaciones completadas.</div>';
+      return;
+    }
+
+    const title = document.createElement('div');
+    title.className = 'completed-item';
+    title.textContent = `Progreso real: ${doneCount} / ${conditions.length}`;
+    completedList.appendChild(title);
+
+    conditions.slice(0, doneCount).slice(-8).forEach((condition, index) => {
+      const div = document.createElement('div');
+      div.className = 'completed-item';
+      div.textContent = `✓ ${condition.done}`;
+      completedList.appendChild(div);
+    });
+  }
+
+  function showServerUnavailable() {
+    serverScreen.classList.add('active');
+    let pct = 0;
+
+    const interval = setInterval(() => {
+      pct += Math.floor(Math.random() * 13) + 5;
+
+      if (pct >= 100) {
+        pct = 100;
+        clearInterval(interval);
+        setTimeout(resetAll, 1300);
+      }
+
+      serverText.innerHTML =
+        `Recopilando información del error... ${pct}% completado<br><br>` +
+        `Código de detención: SERVER_NOT_AVAILABLE<br>` +
+        `Archivo afectado: registro_final.dll<br>` +
+        `Estado: intente más tarde su registro`;
+    }, 230);
+  }
+
+  function resetAll() {
+    serverScreen.classList.remove('active');
+    maxUnlocked = 0;
+    passwordInput.value = '';
+    progress.style.width = '0%';
+    hint.className = 'hint warn';
+    hint.textContent = 'Servidor reiniciado.\nIntente más tarde su registro.';
+    completedList.innerHTML = '<div class="completed-item">Sin validaciones completadas.</div>';
+  }
+
+  function randomLightning() {
+    lightning.classList.add('active');
+    setTimeout(() => lightning.classList.remove('active'), 360);
+  }
+
+  setInterval(() => {
+    if (Math.random() < .22) {
       randomLightning();
     }
-
-    function updateProgress() {
-      const pct = Math.round((currentCondition / conditions.length) * 100);
-      progress.style.width = pct + '%';
-      counter.textContent = `${currentCondition} / ${conditions.length}`;
-    }
-
-    function renderCompleted() {
-      completedList.innerHTML = '';
-      if (!completed.length) {
-        completedList.innerHTML = '<div class="completed-item">Sin validaciones completadas.</div>';
-        return;
-      }
-
-      completed.slice(0, 8).forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'completed-item';
-        div.textContent = `✓ ${item}`;
-        completedList.appendChild(div);
-      });
-    }
-
-    function showServerUnavailable() {
-      serverScreen.classList.add('active');
-      let pct = 0;
-
-      const interval = setInterval(() => {
-        pct += Math.floor(Math.random() * 13) + 5;
-
-        if (pct >= 100) {
-          pct = 100;
-          clearInterval(interval);
-          setTimeout(resetAll, 1200);
-        }
-
-        serverText.innerHTML = `Recopilando información del error... ${pct}% completado<br><br>Código de detención: SERVER_NOT_AVAILABLE<br>Archivo afectado: registro_final.dll<br>Estado: intente más tarde su registro`;
-      }, 230);
-    }
-
-    function resetAll() {
-      serverScreen.classList.remove('active');
-      currentCondition = 0;
-      completed = [];
-      passwordInput.value = '';
-      progress.style.width = '0%';
-      counter.textContent = `0 / ${conditions.length}`;
-      hint.className = 'hint warn';
-      hint.textContent = 'Servidor reiniciado.\nIntente más tarde su registro.';
-      completedList.innerHTML = '<div class="completed-item">Sin validaciones completadas.</div>';
-    }
-
-    function randomLightning() {
-      lightning.classList.add('active');
-      setTimeout(() => lightning.classList.remove('active'), 360);
-    }
-
-    setInterval(() => {
-      if (Math.random() < .28) {
-        randomLightning();
-      }
-    }, 3200);
-  </script>
+  }, 3600);
+</script>
+                    
 </body>
 </html>
